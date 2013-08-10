@@ -90,9 +90,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Api\ApiHelper.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Core\Debt.cs" />
+    <Compile Include="Core\DebtCalculation.cs" />
+    <Compile Include="Core\EntityCreator.cs" />
+    <Compile Include="Core\Expense.cs" />
+    <Compile Include="Core\Participant.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

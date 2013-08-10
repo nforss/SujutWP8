@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using Sujut.Api;
 using Sujut.Resources;
 
 namespace Sujut
@@ -53,7 +55,28 @@ namespace Sujut
 
         private void ShowDebtCalculations()
         {
-            // Get calculations from isolated storage.
+            var webClient = ApiHelper.AuthClient();
+            webClient.DownloadStringCompleted += BuildButtonList;
+            webClient.DownloadStringAsync(ApiHelper.GetFullApiCallUri("api/event/all/"));
+        }
+
+        private void BuildButtonList(object target, DownloadStringCompletedEventArgs eventArgs)
+        {
+            ButtonList.Children.Clear();
+
+            var buttons = ApiHelpers.EventListFromJson(eventArgs.Result);
+
+            foreach (var kvp in buttons.OrderByDescending(kv => kv.Key))
+            {
+                kvp.Value.Click += Button_Click;
+                ButtonList.Children.Add(kvp.Value);
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            dynamic guidData = ((Button)sender).DataContext;
+            NavigationService.Navigate(new Uri("/EventView.xaml?venueGuid=" + guidData.VenueGuid + "&eventGuid=" + guidData.EventGuid, UriKind.Relative));
         }
     }
 }
