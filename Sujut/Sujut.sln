@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sujut", "Sujut\Sujut.csproj", "{54E4908F-B271-4F7A-A610-29C01130D928}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sujut.Tests", "Sujut.Tests\Sujut.Tests.csproj", "{D76A7E2F-A59E-4B4A-845F-9F89F35D2A2E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sujut.Tests", "Sujut.Tests\Sujut.Tests.csproj", "{5AB879E8-7DA1-4119-AEAA-ACF65E2AFCB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,14 +33,14 @@ Global
 		{54E4908F-B271-4F7A-A610-29C01130D928}.Release|x86.ActiveCfg = Release|x86
 		{54E4908F-B271-4F7A-A610-29C01130D928}.Release|x86.Build.0 = Release|x86
 		{54E4908F-B271-4F7A-A610-29C01130D928}.Release|x86.Deploy.0 = Release|x86
-		{D76A7E2F-A59E-4B4A-845F-9F89F35D2A2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D76A7E2F-A59E-4B4A-845F-9F89F35D2A2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D76A7E2F-A59E-4B4A-845F-9F89F35D2A2E}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{D76A7E2F-A59E-4B4A-845F-9F89F35D2A2E}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D76A7E2F-A59E-4B4A-845F-9F89F35D2A2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D76A7E2F-A59E-4B4A-845F-9F89F35D2A2E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D76A7E2F-A59E-4B4A-845F-9F89F35D2A2E}.Release|ARM.ActiveCfg = Release|Any CPU
-		{D76A7E2F-A59E-4B4A-845F-9F89F35D2A2E}.Release|x86.ActiveCfg = Release|Any CPU
+		{5AB879E8-7DA1-4119-AEAA-ACF65E2AFCB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AB879E8-7DA1-4119-AEAA-ACF65E2AFCB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AB879E8-7DA1-4119-AEAA-ACF65E2AFCB7}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{5AB879E8-7DA1-4119-AEAA-ACF65E2AFCB7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5AB879E8-7DA1-4119-AEAA-ACF65E2AFCB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AB879E8-7DA1-4119-AEAA-ACF65E2AFCB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AB879E8-7DA1-4119-AEAA-ACF65E2AFCB7}.Release|ARM.ActiveCfg = Release|Any CPU
+		{5AB879E8-7DA1-4119-AEAA-ACF65E2AFCB7}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

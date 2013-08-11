@@ -14,7 +14,7 @@ namespace Sujut.Core
 
         public string Description { get; set; }
 
-        public string Phase { get; set; }
+        public DebtCalculationPhase Phase { get; set; }
 
         public string Currency { get; set; }
 

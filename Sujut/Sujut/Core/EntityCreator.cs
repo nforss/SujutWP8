@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,12 +10,14 @@ namespace Sujut.Core
 {
     public class EntityCreator
     {
-        public static IEnumerable<DebtCalculation> DebtCalculationFromJson(string json)
+        public const string JsonDateTimeFormat = "yyyy-MM-ddTHH:mm:ss";
+
+        public static IEnumerable<DebtCalculation> DebtCalculationsFromJson(string json)
         {
-            return DebtCalculationFromJson(JArray.Parse(json));
+            return DebtCalculationsFromJson(JArray.Parse(json));
         }
 
-        public static IEnumerable<DebtCalculation> DebtCalculationFromJson(JArray array)
+        public static IEnumerable<DebtCalculation> DebtCalculationsFromJson(JArray array)
         {
             var list = new List<DebtCalculation>();
 
@@ -26,35 +29,40 @@ namespace Sujut.Core
             return list;
         }
 
+        public static DebtCalculation DebtCalculationFromJson(string json)
+        {
+            return DebtCalculationFromJson(JObject.Parse(json));
+        }
+
         public static DebtCalculation DebtCalculationFromJson(dynamic obj)
         {
             var calc = new DebtCalculation
             {
-                Id = long.Parse(obj.Id),
+                Id = obj.Id,
                 Name = obj.Name,
-                Phase = obj.Phase,
-                LastActivityTime = DateTime.Parse(obj.LastActivityTime)
+                Phase = (DebtCalculationPhase) obj.Phase,
+                LastActivityTime = obj.LastActivityTime
             };
 
             if (obj.Currency != null) // Currency should never be null in "full" calculation
             {
                 calc.Currency = obj.Currency;
-                calc.CreatorId = long.Parse(obj.CreatorId);
+                calc.CreatorId = obj.CreatorId;
                 calc.Description = obj.Description;
-                calc.Participants = ParticipantFromJson((JArray) obj.Participants);
-                calc.Expenses = ExpenseFromJson((JArray) obj.Expenses);
-                calc.Debts = DebtFromJson((JArray) obj.Debts);
+                calc.Participants = ParticipantsFromJson((JArray) obj.Participants);
+                calc.Expenses = ExpensesFromJson((JArray) obj.Expenses);
+                calc.Debts = DebtsFromJson((JArray) obj.Debts);
             }
 
             return calc;
         }
 
-        public static IEnumerable<Participant> ParticipantFromJson(string json)
+        public static IEnumerable<Participant> ParticipantsFromJson(string json)
         {
-            return ParticipantFromJson(JArray.Parse(json));
+            return ParticipantsFromJson(JArray.Parse(json));
         }
 
-        public static IEnumerable<Participant> ParticipantFromJson(JArray array)
+        public static IEnumerable<Participant> ParticipantsFromJson(JArray array)
         {
             var list = new List<Participant>();
 
@@ -66,6 +74,11 @@ namespace Sujut.Core
             return list;
         }
 
+        public static Participant ParticipantFromJson(string json)
+        {
+            return ParticipantFromJson(JObject.Parse(json));
+        }
+
         public static Participant ParticipantFromJson(dynamic obj)
         {
             var participant = new Participant
@@ -74,20 +87,20 @@ namespace Sujut.Core
                 Lastname = obj.Lastname,
                 Email = obj.Email,
                 PaymentInstructions = obj.PaymentInstructions,
-                Id = long.Parse(obj.Id),
-                HasPaid = bool.Parse(obj.HasPaid),
-                DoneAddingExpenses = bool.Parse(obj.DoneAddingExpenses)
+                Id = obj.Id,
+                HasPaid = obj.HasPaid,
+                DoneAddingExpenses = obj.DoneAddingExpenses
             };
 
             return participant;
         }
 
-        public static IEnumerable<Expense> ExpenseFromJson(string json)
+        public static IEnumerable<Expense> ExpensesFromJson(string json)
         {
-            return ExpenseFromJson(JArray.Parse(json));
+            return ExpensesFromJson(JArray.Parse(json));
         }
 
-        public static IEnumerable<Expense> ExpenseFromJson(JArray array)
+        public static IEnumerable<Expense> ExpensesFromJson(JArray array)
         {
             var list = new List<Expense>();
 
@@ -99,26 +112,31 @@ namespace Sujut.Core
             return list;
         }
 
+        public static Expense ExpenseFromJson(string json)
+        {
+            return ExpenseFromJson(JObject.Parse(json));
+        }
+
         public static Expense ExpenseFromJson(dynamic obj)
         {
             var expense = new Expense
                 {
                     Description = obj.Description,
-                    Amount = decimal.Parse(obj.Amount),
-                    AddedTime = DateTime.Parse(obj.AddedTime),
-                    PayerId = long.Parse(obj.PayerId),
-                    UsersInDebtIds = ((IEnumerable<string>) obj.UsersInDebtIds).Select(long.Parse).ToList()
+                    Amount = obj.Amount,
+                    AddedTime = obj.AddedTime,
+                    PayerId = obj.PayerId,
+                    UsersInDebtIds = ((JArray)obj.UsersInDebtIds).Select(u => (long)u).ToList()
                 };
 
             return expense;
         }
 
-        public static IEnumerable<Debt> DebtFromJson(string json)
+        public static IEnumerable<Debt> DebtsFromJson(string json)
         {
-            return DebtFromJson(JArray.Parse(json));
+            return DebtsFromJson(JArray.Parse(json));
         }
 
-        public static  IEnumerable<Debt> DebtFromJson(JArray array)
+        public static  IEnumerable<Debt> DebtsFromJson(JArray array)
         {
             var list = new List<Debt>();
 
@@ -130,13 +148,18 @@ namespace Sujut.Core
             return list;
         }
 
+        public static Debt DebtFromJson(string json)
+        {
+            return DebtFromJson(JObject.Parse(json));
+        }
+
         public static Debt DebtFromJson(dynamic obj)
         {
             var debt = new Debt
                 {
-                    Amount = decimal.Parse(obj.Amount),
-                    CreditorId = long.Parse(obj.CreditorId),
-                    DebtorId = long.Parse(obj.DebtorId)
+                    Amount = obj.Amount,
+                    CreditorId = obj.CreditorId,
+                    DebtorId = obj.DebtorId
                 };
 
             return debt;

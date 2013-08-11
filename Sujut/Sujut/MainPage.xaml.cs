@@ -62,15 +62,15 @@ namespace Sujut
 
         private void BuildButtonList(object target, DownloadStringCompletedEventArgs eventArgs)
         {
-            ButtonList.Children.Clear();
+            //ButtonList.Children.Clear();
 
-            var buttons = ApiHelpers.EventListFromJson(eventArgs.Result);
+            //var buttons = ApiHelpers.EventListFromJson(eventArgs.Result);
 
-            foreach (var kvp in buttons.OrderByDescending(kv => kv.Key))
-            {
-                kvp.Value.Click += Button_Click;
-                ButtonList.Children.Add(kvp.Value);
-            }
+            //foreach (var kvp in buttons.OrderByDescending(kv => kv.Key))
+            //{
+            //    kvp.Value.Click += Button_Click;
+            //    ButtonList.Children.Add(kvp.Value);
+            //}
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
