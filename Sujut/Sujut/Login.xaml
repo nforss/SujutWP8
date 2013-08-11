@@ -1,5 +1,5 @@
 ﻿<phone:PhoneApplicationPage
-    x:Class="Sujut.MainPage"
+    x:Class="Sujut.Login"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
@@ -44,7 +44,7 @@
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Background="#BBDDAA">
             <TextBlock x:Name="SujutHeader" Text="{Binding Path=LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}" 
                        Style="{StaticResource PhoneTextNormalStyle}" Margin="12,0" Foreground="{StaticResource BlackAccentBrush}"/>
-            <TextBlock Text="{Binding Path=LocalizedResources.DebtCalculations, Source={StaticResource LocalizedStrings}}" Margin="9,-7,0,0" 
+            <TextBlock Text="{Binding Path=LocalizedResources.Login, Source={StaticResource LocalizedStrings}}" Margin="9,-7,0,0" 
                        Style="{StaticResource PhoneTextTitle1Style}" Foreground="{StaticResource BlackAccentBrush}" FontSize="48"/>
         </StackPanel>
 
@@ -56,11 +56,17 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <ScrollViewer Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" >
-                <StackPanel x:Name="ButtonList"></StackPanel>
-            </ScrollViewer>
+            
+            <StackPanel x:Name="LoginFields" Grid.Row="1">
+                <TextBlock Margin="15,0,0,0" Text="{Binding Path=LocalizedResources.Email, Source={StaticResource LocalizedStrings} }" Foreground="{StaticResource BlackAccentBrush}" />
+                <TextBox x:Name="Email" BorderBrush="{StaticResource BlackAccentBrush}" />
+                <TextBlock Margin="15,0,0,0" Text="{Binding Path=LocalizedResources.Password, Source={StaticResource LocalizedStrings} }" Foreground="{StaticResource BlackAccentBrush}" />
+                <PasswordBox x:Name="Password" Background="{x:Null}" BorderBrush="{StaticResource BlackAccentBrush}" />
+                <Button Content="{Binding Path=LocalizedResources.Login, Source={StaticResource LocalizedStrings} }" Click="Login_Click" BorderBrush="{StaticResource BlackAccentBrush}" Foreground="{StaticResource BlackAccentBrush}" Background="{StaticResource SujutFooterAccentBrush}" />
+            </StackPanel>
+            
         </Grid>
 
         <!--Uncomment to see an alignment grid to help ensure your controls are

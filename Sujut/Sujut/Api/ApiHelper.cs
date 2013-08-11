@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Navigation;
+using Sujut.Core;
 
 namespace Sujut.Api
 {
@@ -16,6 +17,52 @@ namespace Sujut.Api
         public static string BaseApiUrl = "";
         private const string CredentialsFolderName = "Credentials";
         private const string CredentialsFileName = "Credentials";
+
+        public static bool UserIsLoggedIn()
+        {
+            return GetUserNameAndPassword() != null;
+        }
+
+        public static void SaveCredentials(string username, string password)
+        {
+            var stringToStore = username + ":" + password;
+
+            // Obtain an isolated store for an application.
+            try
+            {
+                using (var store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (!store.DirectoryExists(CredentialsFolderName))
+                    {
+                        store.CreateDirectory(CredentialsFolderName);
+                    }
+
+                    var filePath = Path.Combine(CredentialsFolderName, CredentialsFileName);
+
+                    if (store.FileExists(filePath))
+                    {
+                        // Can only have one logged-in user at a time (at this point)
+                        store.DeleteFile(filePath);
+                    }
+                
+                    try
+                    {
+                        using (var sw = new StreamWriter(store.CreateFile(filePath)))
+                        {
+                            sw.WriteLine(stringToStore);
+                        }
+                    }
+                    catch (IsolatedStorageException ex)
+                    {
+                        // TODO: Handle that file could not be written to
+                    }                 
+                }
+            }
+            catch (IsolatedStorageException ex)
+            {
+                // TODO: Handle that store was unable to be accessed.
+            }
+        }
 
         public static Uri GetFullApiCallUri(string uri)
         {
@@ -38,6 +85,22 @@ namespace Sujut.Api
             return webClient;
         }
 
+        public static Participant CurrentUser(DebtCalculation calculation)
+        {
+            var usernameAndPassword = GetUserNameAndPassword();
+
+            if (usernameAndPassword == null)
+            {
+                throw new Exception("Username and password not in Isolated storage.");
+            }
+
+            var username = usernameAndPassword.Split(':')[0];
+
+            var currentUser = calculation.Participants.Single(p => p.Email == username);
+
+            return currentUser;
+        }
+
         private static string GetUserNameAndPassword()
         {
             try
@@ -54,7 +117,7 @@ namespace Sujut.Api
                             {
                                 var contents = reader.ReadToEnd();
 
-                                return contents;
+                                return contents.Trim();
                             }
                         }
                         catch (IsolatedStorageException ex)

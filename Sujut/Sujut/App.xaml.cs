@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Resources;
 using System.Windows;
 using System.Windows.Markup;
+using System.Windows.Media;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
@@ -54,7 +55,9 @@ namespace Sujut
                 // and consume battery power when the user is not using the phone.
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
-
+            
+            (Current.Resources["PhoneAccentBrush"] as SolidColorBrush).Color = Colors.Black;
+            (Current.Resources["PhoneBackgroundBrush"] as SolidColorBrush).Color = Colors.White;
         }
 
         // Code to execute when the application is launching (eg, from Start)

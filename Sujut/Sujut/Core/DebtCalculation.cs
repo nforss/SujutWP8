@@ -18,7 +18,7 @@ namespace Sujut.Core
 
         public string Currency { get; set; }
 
-        public DateTime LastActivityTime { get; set; }
+        public DateTime? LastActivityTime { get; set; }
 
         public long CreatorId { get; set; }
 
