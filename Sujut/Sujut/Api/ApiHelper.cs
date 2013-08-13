@@ -14,7 +14,7 @@ namespace Sujut.Api
 {
     public class ApiHelper
     {
-        public static string BaseApiUrl = "";
+        public static string BaseApiUrl = "https://sujut.apphb.com/";
         private const string CredentialsFolderName = "Credentials";
         private const string CredentialsFileName = "Credentials";
 

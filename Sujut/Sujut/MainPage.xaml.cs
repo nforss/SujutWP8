@@ -57,11 +57,11 @@ namespace Sujut
             createNewButton.Click += Sync_Click;
             ApplicationBar.Buttons.Add(syncButton);
 
-            //var webClient = ApiHelper.AuthClient();
-            //webClient.DownloadStringCompleted += BuildButtonList;
-            //webClient.DownloadStringAsync(ApiHelper.GetFullApiCallUri("api/debtcalculation/all/"));
+            var webClient = ApiHelper.AuthClient();
+            webClient.DownloadStringCompleted += BuildButtonList;
+            webClient.DownloadStringAsync(ApiHelper.GetFullApiCallUri("api/debtcalculation/all/"));
 
-            BuildButtonList(null, null);
+            //BuildButtonList(null, null);
         }
 
         private void CreateNew_Click(object sender, EventArgs eventArgs)
@@ -78,8 +78,8 @@ namespace Sujut
         {
             ButtonList.Children.Clear();
 
-            //var calcs = EntityCreator.DebtCalculationsFromJson(eventArgs.Result);
-            var calcs = EntityCreator.DebtCalculationsFromJson(json);
+            var calcs = EntityCreator.DebtCalculationsFromJson(eventArgs.Result);
+            //var calcs = EntityCreator.DebtCalculationsFromJson(json);
 
             foreach (var calc in calcs.OrderByDescending(calc => calc.LastActivityTime))
             {

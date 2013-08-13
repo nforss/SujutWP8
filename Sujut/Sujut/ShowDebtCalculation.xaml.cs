@@ -34,11 +34,11 @@ namespace Sujut
 
             ContentPanel.Children.Add(new ProgressBar { IsIndeterminate = true, Width = 300, Margin = new Thickness(0, 30, 0, 0) });
 
-            //var webClient = ApiHelper.AuthClient();
-            //webClient.DownloadStringCompleted += ShowCalculation;
-            //webClient.DownloadStringAsync(ApiHelper.GetFullApiCallUri("api/debtcalculation/show/" + id));
+            var webClient = ApiHelper.AuthClient();
+            webClient.DownloadStringCompleted += ShowCalculation;
+            webClient.DownloadStringAsync(ApiHelper.GetFullApiCallUri("api/debtcalculation/show/" + id));
 
-            ShowCalculation(null, null);
+            //ShowCalculation(null, null);
 
         }
 
@@ -46,8 +46,8 @@ namespace Sujut
         {
             ContentPanel.Children.Clear();
 
-            //var calc = EntityCreator.DebtCalculationFromJson(eventArgs.Result);
-            var calc = EntityCreator.DebtCalculationFromJson(json);
+            var calc = EntityCreator.DebtCalculationFromJson(eventArgs.Result);
+            //var calc = EntityCreator.DebtCalculationFromJson(json);
             var currentUser = ApiHelper.CurrentUser(calc);
 
             // Cannot localize ApplicationBar unless it is created in code behind
