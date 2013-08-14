@@ -54,7 +54,7 @@ namespace Sujut
                 IconUri = new Uri("/Assets/Icons/close.png", UriKind.Relative)
             };
 
-            createNewButton.Click += Sync_Click;
+            createNewButton.Click += Logout_Click;
             ApplicationBar.Buttons.Add(syncButton);
 
             var webClient = ApiHelper.AuthClient();
@@ -69,9 +69,11 @@ namespace Sujut
             NavigationService.Navigate(new Uri("/CreateNew.xaml", UriKind.Relative));
         }
 
-        private void Sync_Click(object sender, EventArgs eventArgs)
+        private void Logout_Click(object sender, EventArgs eventArgs)
         {
-            // sync
+            ApiHelper.Logout();
+
+            NavigationService.Navigate(new Uri("/Login.xaml", UriKind.Relative));
         }
 
         private void BuildButtonList(object target, DownloadStringCompletedEventArgs eventArgs)

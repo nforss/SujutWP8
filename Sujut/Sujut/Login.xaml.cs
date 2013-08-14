@@ -43,11 +43,11 @@ namespace Sujut
 
             // Check with server that credentials are OK.
             var webClient = new WebClient();
-            webClient.DownloadStringCompleted += ShowCalculation;
+            webClient.DownloadStringCompleted += Login_Click;
             webClient.DownloadStringAsync(ApiHelper.GetFullApiCallUri("api/validateuser/" + email + "/" + password));
         }
 
-        private void ShowCalculation(object target, DownloadStringCompletedEventArgs eventArgs)
+        private void Login_Click(object target, DownloadStringCompletedEventArgs eventArgs)
         {
             var progBar = ContentPanel.Children.First(c => c is ProgressBar);
             ContentPanel.Children.Remove(progBar);

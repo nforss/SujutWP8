@@ -69,6 +69,26 @@ namespace Sujut.Api
             return new Uri(BaseApiUrl + uri, UriKind.Absolute);
         }
 
+        public static void Logout()
+        {
+            try
+            {
+                using (var store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    var filePath = Path.Combine(CredentialsFolderName, CredentialsFileName);
+
+                    if (store.FileExists(filePath))
+                    {
+                        store.DeleteFile(filePath);
+                    }
+                }
+            }
+            catch (IsolatedStorageException ex)
+            {
+                // TODO: Handle that store was unable to be accessed.
+            }
+        }
+
         public static WebClient AuthClient()
         {
             var usernameAndPassword = GetUserNameAndPassword();
