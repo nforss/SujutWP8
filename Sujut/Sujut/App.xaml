@@ -9,9 +9,9 @@
     <Application.Resources>
         <local:LocalizedStrings xmlns:local="clr-namespace:Sujut" x:Key="LocalizedStrings"/>
         <SolidColorBrush x:Key="BlackAccentBrush" Color="#000000"/>
-        <SolidColorBrush x:Key="SujutHeaderAccentBrush" Color="#BBDDAA"/>
+        <SolidColorBrush x:Key="SujutLightGreenBrush" Color="#BBDDAA"/>
         <SolidColorBrush x:Key="WhiteAccentBrush" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="SujutFooterAccentBrush" Color="#86C440"/>
+        <SolidColorBrush x:Key="SujutDarkGreenBrush" Color="#86C440"/>
     </Application.Resources>
 
     <Application.ApplicationLifetimeObjects>

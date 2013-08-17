@@ -110,7 +110,6 @@ namespace Sujut
                     {
                         Content = grid, 
                         DataContext = new { DebtCalculationId = calc.Id },
-                        Background = (SolidColorBrush)Application.Current.Resources["SujutFooterAccentBrush"],
                         Foreground = (SolidColorBrush)Application.Current.Resources["BlackAccentBrush"],
                         BorderBrush = (SolidColorBrush)Application.Current.Resources["BlackAccentBrush"]
                     };

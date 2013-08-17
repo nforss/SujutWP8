@@ -153,7 +153,7 @@
     <value>Email</value>
   </data>
   <data name="HasPaid" xml:space="preserve">
-    <value>Have paid</value>
+    <value>Has paid</value>
   </data>
   <data name="Login" xml:space="preserve">
     <value>Log in</value>
@@ -163,5 +163,35 @@
   </data>
   <data name="Password" xml:space="preserve">
     <value>Password</value>
+  </data>
+  <data name="Debts" xml:space="preserve">
+    <value>Debts</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Expenses" xml:space="preserve">
+    <value>Expenses</value>
+  </data>
+  <data name="Info" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="Participants" xml:space="preserve">
+    <value>Participants</value>
+  </data>
+  <data name="Phase" xml:space="preserve">
+    <value>Phase</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="Payer" xml:space="preserve">
+    <value>Payer</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>To</value>
   </data>
 </root>

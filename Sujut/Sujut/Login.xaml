@@ -64,7 +64,7 @@
                 <TextBox x:Name="Email" BorderBrush="{StaticResource BlackAccentBrush}" />
                 <TextBlock Margin="15,0,0,0" Text="{Binding Path=LocalizedResources.Password, Source={StaticResource LocalizedStrings} }" Foreground="{StaticResource BlackAccentBrush}" />
                 <PasswordBox x:Name="Password" Background="{x:Null}" BorderBrush="{StaticResource BlackAccentBrush}" />
-                <Button Content="{Binding Path=LocalizedResources.Login, Source={StaticResource LocalizedStrings} }" Click="Login_Click" BorderBrush="{StaticResource BlackAccentBrush}" Foreground="{StaticResource BlackAccentBrush}" Background="{StaticResource SujutFooterAccentBrush}" />
+                <Button Content="{Binding Path=LocalizedResources.Login, Source={StaticResource LocalizedStrings} }" Click="Login_Click" BorderBrush="{StaticResource BlackAccentBrush}" Foreground="{StaticResource BlackAccentBrush}" Background="{StaticResource SujutDarkGreenBrush}" />
             </StackPanel>
             
         </Grid>

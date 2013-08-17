@@ -70,6 +70,15 @@ namespace Sujut.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Amount.
+        /// </summary>
+        public static string Amount {
+            get {
+                return ResourceManager.GetString("Amount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to add.
         /// </summary>
         public static string AppBarButtonText {
@@ -115,6 +124,24 @@ namespace Sujut.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Debts.
+        /// </summary>
+        public static string Debts {
+            get {
+                return ResourceManager.GetString("Debts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string Description {
+            get {
+                return ResourceManager.GetString("Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit.
         /// </summary>
         public static string Edit {
@@ -133,11 +160,38 @@ namespace Sujut.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Have paid.
+        ///   Looks up a localized string similar to Expenses.
+        /// </summary>
+        public static string Expenses {
+            get {
+                return ResourceManager.GetString("Expenses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to From.
+        /// </summary>
+        public static string From {
+            get {
+                return ResourceManager.GetString("From", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Has paid.
         /// </summary>
         public static string HasPaid {
             get {
                 return ResourceManager.GetString("HasPaid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Info.
+        /// </summary>
+        public static string Info {
+            get {
+                return ResourceManager.GetString("Info", resourceCulture);
             }
         }
         
@@ -160,11 +214,38 @@ namespace Sujut.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Participants.
+        /// </summary>
+        public static string Participants {
+            get {
+                return ResourceManager.GetString("Participants", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
         public static string Password {
             get {
                 return ResourceManager.GetString("Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payer.
+        /// </summary>
+        public static string Payer {
+            get {
+                return ResourceManager.GetString("Payer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phase.
+        /// </summary>
+        public static string Phase {
+            get {
+                return ResourceManager.GetString("Phase", resourceCulture);
             }
         }
         
@@ -192,6 +273,15 @@ namespace Sujut.Resources {
         public static string Sync {
             get {
                 return ResourceManager.GetString("Sync", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To.
+        /// </summary>
+        public static string To {
+            get {
+                return ResourceManager.GetString("To", resourceCulture);
             }
         }
     }

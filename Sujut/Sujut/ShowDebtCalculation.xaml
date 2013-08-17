@@ -47,16 +47,60 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="30"/>
-            </Grid.RowDefinitions>
-
-            <Grid Grid.Row="0">
-                
-            </Grid>
-            
-            <Grid Background="#86C440" Grid.Row="1" />
+            <phone:Pivot Grid.Row="0" x:Name="MainPivot" Margin="0" Foreground="{StaticResource BlackAccentBrush}">
+                <phone:PivotItem x:Name="Info" CacheMode="{x:Null}" Header="{Binding Path=LocalizedResources.Info, Source={StaticResource LocalizedStrings}}" Foreground="{StaticResource BlackAccentBrush}" Margin="0">
+                	<Grid x:Name="InfoGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock x:Name="PhaseTitle" Text="{Binding Path=LocalizedResources.Phase, Source={StaticResource LocalizedStrings}}" Grid.Row="0" TextWrapping="Wrap" VerticalAlignment="Bottom" FontWeight="Bold" Margin="20,15,0,0" />
+                            <TextBlock x:Name="Phase" Grid.Row="1" Foreground="{StaticResource BlackAccentBrush}" Margin="40,0,0,0"/>
+                        <TextBlock x:Name="DescriptionTitle" Grid.Row="2" TextWrapping="Wrap" Text="{Binding Path=LocalizedResources.Description, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Bottom" FontWeight="Bold" Margin="20,15,0,0"/>
+                            <TextBlock x:Name="Description" Grid.Row="3" Foreground="{StaticResource BlackAccentBrush}" Margin="40,0,0,0"/>
+                    </Grid>
+                </phone:PivotItem>
+                <phone:PivotItem x:Name="Debts" Header="{Binding Path=LocalizedResources.Debts, Source={StaticResource LocalizedStrings}}" Margin="0" Foreground="{StaticResource BlackAccentBrush}" Background="Transparent">
+                    <ScrollViewer Margin="20,0">
+                        <StackPanel x:Name="DebtsList">
+                        </StackPanel>
+                    </ScrollViewer>
+                </phone:PivotItem>
+                <phone:PivotItem x:Name="Expenses" Header="{Binding Path=LocalizedResources.Expenses, Source={StaticResource LocalizedStrings}}" Foreground="{StaticResource BlackAccentBrush}" Margin="0">
+                    <ScrollViewer Margin="20,0">
+                        <StackPanel x:Name="ExpensesList">
+                            <Grid x:Name="ExpensesHeaderGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock x:Name="ExpensesPayerHeader" Grid.Column="0" Text="{Binding Path=LocalizedResources.Payer, Source={StaticResource LocalizedStrings}}" FontWeight="Bold"/>
+                                <TextBlock x:Name="ExpensesAmountHeader" Grid.Column="1" Text="{Binding Path=LocalizedResources.Amount, Source={StaticResource LocalizedStrings}}" Margin="0,0,5,0" FontWeight="Bold"/>
+                                <TextBlock x:Name="ExpensesParticipantsHeader" Grid.Column="2" Text="{Binding Path=LocalizedResources.Participants, Source={StaticResource LocalizedStrings}}" Margin="5,0,0,0" FontWeight="Bold"/>
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </phone:PivotItem>
+                <phone:PivotItem x:Name="Participants" Header="{Binding Path=LocalizedResources.Participants, Source={StaticResource LocalizedStrings}}" Margin="0" Foreground="{StaticResource BlackAccentBrush}">
+                	<ScrollViewer Margin="20,0">
+                        <StackPanel x:Name="ParticipantsList">
+                            <Grid x:Name="ParticipantsHeaderGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock x:Name="ParticipantsEmailHeader" Grid.Column="0" Text="{Binding Path=LocalizedResources.Email, Source={StaticResource LocalizedStrings}}" FontWeight="Bold"/>
+                                <TextBlock x:Name="ParticipantsAddedExpHeader" Grid.Column="1" Text="{Binding Path=LocalizedResources.AddedExpenses, Source={StaticResource LocalizedStrings}}" Margin="0,0,5,0" FontWeight="Bold"/>
+                                <TextBlock x:Name="ParticipantsHasPaidHeader" Grid.Column="2" Text="{Binding Path=LocalizedResources.HasPaid, Source={StaticResource LocalizedStrings}}" Margin="5,0,0,0" FontWeight="Bold"/>
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </phone:PivotItem>
+            </phone:Pivot>
         </Grid>
 
         <!--Uncomment to see an alignment grid to help ensure your controls are
