@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -98,7 +100,7 @@ namespace Sujut
                             IconUri = new Uri("/Assets/Icons/check.png", UriKind.Relative)
                         };
 
-                    doneExpensesButton.Click += Some_Click;
+                    doneExpensesButton.Click += AddedExpenses_Click;
                     ApplicationBar.Buttons.Add(doneExpensesButton);
                 }
             }
@@ -119,7 +121,7 @@ namespace Sujut
                             IconUri = new Uri("/Assets/Icons/check.png", UriKind.Relative)
                         };
 
-                    donePaymentsButton.Click += Some_Click;
+                    donePaymentsButton.Click += HasPaid_Click;
                     ApplicationBar.Buttons.Add(donePaymentsButton);
                 }
             }
@@ -290,9 +292,27 @@ namespace Sujut
             }
         }
 
-        private void Some_Click(object sender, EventArgs eventArgs)
+        private void AddedExpenses_Click(object sender, EventArgs eventArgs)
         {
-            // sync
+            var webClient = ApiHelper.AuthClient();
+            webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
+            webClient.UploadStringCompleted += ReloadPage;
+            webClient.UploadStringAsync(
+                ApiHelper.GetFullApiCallUri("api/debtcalculation/doneaddingexpenses?debtCalculationId=" + id), "POST", "");
+        }
+
+        private void HasPaid_Click(object sender, EventArgs eventArgs)
+        {
+            var webClient = ApiHelper.AuthClient();
+            webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
+            webClient.UploadStringCompleted += ReloadPage;
+            webClient.UploadStringAsync(ApiHelper.GetFullApiCallUri("api/debtcalculation/paid?debtCalculationId=" + id), "POST", "");
+        }
+
+        private void ReloadPage(object target, UploadStringCompletedEventArgs args)
+        {
+            NavigationService.Navigate(new Uri("/ShowDebtCalculation.xaml?debtCalculationId=" + id + 
+                "&" + DateTime.Now.Ticks, UriKind.Relative));
         }
     }
 }
