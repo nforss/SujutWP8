@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sujut.Core
 {
-    public enum DebtCalculationPhase
+    public enum OldDebtCalculationPhase
     {
         Undefined,
         GatheringParticipants,

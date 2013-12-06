@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Services.Client;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -15,11 +16,16 @@ using Microsoft.Phone.Shell;
 using Sujut.Api;
 using Sujut.Core;
 using Sujut.Resources;
+using Sujut.SujutApi;
+using DebtCalculation = Sujut.SujutApi.DebtCalculation;
 
 namespace Sujut
 {
     public partial class ShowDebtCalculation : PhoneApplicationPage
     {
+        private Container _container;
+        private DataServiceCollection<DebtCalculation> _calculations;
+
         private long id;
 
         PivotItem ParticipantsItem { get; set; }
@@ -29,7 +35,7 @@ namespace Sujut
         public ShowDebtCalculation()
         {
             InitializeComponent();
-
+            
             ParticipantsItem = Participants;
             ExpensesItem = Expenses;
             DebtsItem = Debts;
@@ -44,6 +50,10 @@ namespace Sujut
             base.OnNavigatedTo(e);
 
             id = long.Parse(NavigationContext.QueryString["debtCalculationId"]);
+
+            _container = ApiHelper.GetContainer();
+
+            _calculations = new DataServiceCollection<DebtCalculation>(_container);
             
             // Cannot localize ApplicationBar unless it is created in code behind
             ApplicationBar = new ApplicationBar
@@ -55,21 +65,37 @@ namespace Sujut
 
             ContentPanel.Children.Add(new ProgressBar { IsIndeterminate = true, Width = 300, Margin = new Thickness(0, 30, 0, 0) });
 
-            var webClient = ApiHelper.AuthClient();
-            webClient.DownloadStringCompleted += ShowCalculation;
-            webClient.DownloadStringAsync(ApiHelper.GetFullApiCallUri("api/debtcalculation/show/" + id));
+            //var webClient = ApiHelper.AuthClient();
+            //webClient.DownloadStringCompleted += ShowCalculation;
+            //webClient.DownloadStringAsync(ApiHelper.GetFullApiCallUri("api/debtcalculation/show/" + id));
+
+            var query = _container.DebtCalculations
+                .Expand(dc => dc.Expenses)
+                .Expand(dc => dc.Participants)
+                .Where(dc => dc.Id == id);
+
+            _calculations.LoadCompleted += ShowCalculation;
+            _calculations.LoadAsync(query);
         }
 
-        private void ShowCalculation(object target, DownloadStringCompletedEventArgs eventArgs)
+        //private void ShowCalculation(object target, DownloadStringCompletedEventArgs eventArgs)
+        private void ShowCalculation(object target, LoadCompletedEventArgs eventArgs)
         {
             var progBar = ContentPanel.Children.First(c => c is ProgressBar);
             ContentPanel.Children.Remove(progBar);
 
-            var calc = EntityCreator.DebtCalculationFromJson(eventArgs.Result);
-            var currentUser = ApiHelper.CurrentUser(calc);
+            var calc = _calculations.SingleOrDefault();
+
+            if (calc == null)
+            {
+                return;
+            }
+
+            //var calc = EntityCreator.DebtCalculationFromJson(eventArgs.Result);
+            var currentUserId = ApiHelper.CurrentUserId();
 
             PageHeader.Text = calc.Name;
-            Phase.Text = calc.Phase.ToString();
+            Phase.Text = calc.Phase;
             Description.Text = calc.Description;
 
             ShowParticipants(calc);
@@ -86,13 +112,13 @@ namespace Sujut
             //    ApplicationBar.Buttons.Add(editButton);
             //}
 
-            if (calc.Phase == DebtCalculationPhase.CollectingExpenses)
+            if (calc.Phase == "CollectingExpenses")
             {
                 MainPivot.Items.Add(ExpensesItem);
 
                 ShowExpenses(calc);
 
-                if (!currentUser.DoneAddingExpenses)
+                if (!calc.Participants.Single(p => p.User.Id == currentUserId).DoneAddingExpenses)
                 {
                     var doneExpensesButton = new ApplicationBarIconButton
                         {
@@ -105,7 +131,7 @@ namespace Sujut
                 }
             }
 
-            if (calc.Phase == DebtCalculationPhase.CollectingPayments)
+            if (calc.Phase == "CollectingPayments")
             {
                 MainPivot.Items.Add(DebtsItem);
                 MainPivot.Items.Add(ExpensesItem);
@@ -113,7 +139,7 @@ namespace Sujut
                 ShowExpenses(calc);
                 ShowDebts(calc);
 
-                if (!currentUser.HasPaid)
+                if (!calc.Participants.Single(p => p.User.Id == currentUserId).HasPaid)
                 {
                     var donePaymentsButton = new ApplicationBarIconButton
                         {
@@ -146,7 +172,7 @@ namespace Sujut
                     grid.Background = (SolidColorBrush)Application.Current.Resources["SujutLightGreenBrush"];
                 }
 
-                var email = new TextBlock { Text = participant.Email };
+                var email = new TextBlock { Text = "Former email" };
                 Grid.SetRow(email, 0);
                 Grid.SetColumn(email, 0);
                 grid.Children.Add(email);
@@ -161,9 +187,9 @@ namespace Sujut
                 Grid.SetColumn(hasPaid, 2);
                 grid.Children.Add(hasPaid);
 
-                if (participant.Firstname != null || participant.Lastname != null)
+                if (participant.User.Firstname != null || participant.User.Lastname != null)
                 {
-                    var nameBlock = new TextBlock { Text = participant.Firstname + " " + participant.Lastname };
+                    var nameBlock = new TextBlock { Text = participant.User.Firstname + " " + participant.User.Lastname };
                     Grid.SetRow(nameBlock, 1);
                     Grid.SetColumn(nameBlock, 0);
                     grid.Children.Add(nameBlock);
@@ -194,20 +220,20 @@ namespace Sujut
                     grid.Background = (SolidColorBrush)Application.Current.Resources["SujutLightGreenBrush"];
                 }
 
-                var payer = calc.Participants.Single(p => p.Id == expense.PayerId);
-                var payerText = new TextBlock { Text = payer.Email };
+                var payer = calc.Participants.Single(p => p.Id == expense.Payer.Id);
+                var payerText = new TextBlock { Text = payer.User.Firstname };
                 Grid.SetRow(payerText, 0);
                 Grid.SetColumn(payerText, 0);
                 grid.Children.Add(payerText);
 
-                var amount = new TextBlock { Text = calc.AmountAsString(expense.Amount), HorizontalAlignment = HorizontalAlignment.Center };
+                var amount = new TextBlock { Text = Utils.AmountAsString(calc, expense.Amount), HorizontalAlignment = HorizontalAlignment.Center };
                 Grid.SetRow(amount, 0);
                 Grid.SetColumn(amount, 1);
                 grid.Children.Add(amount);
 
                 var participants = new TextBlock 
                 { 
-                    Text = expense.UsersInDebtIds.Count() + "/" + totalParticipants,
+                    Text = expense.Debtors.Count() + "/" + totalParticipants,
                     HorizontalAlignment = HorizontalAlignment.Center 
                 };
 
@@ -249,8 +275,8 @@ namespace Sujut
                 Grid.SetColumn(debtorHeader, 0);
                 grid.Children.Add(debtorHeader);
 
-                var debtor = calc.Participants.Single(p => p.Id == debt.DebtorId);
-                var debtorText = new TextBlock { Text = debtor.Email, HorizontalAlignment = HorizontalAlignment.Right };
+                var debtor = calc.Participants.Single(p => p.Id == debt.Debtor.Id);
+                var debtorText = new TextBlock { Text = debtor.User.Firstname, HorizontalAlignment = HorizontalAlignment.Right };
                 Grid.SetRow(debtorText, 0);
                 Grid.SetColumn(debtorText, 1);
                 grid.Children.Add(debtorText);
@@ -260,8 +286,8 @@ namespace Sujut
                 Grid.SetColumn(creditorHeader, 0);
                 grid.Children.Add(creditorHeader);
 
-                var creditor = calc.Participants.Single(p => p.Id == debt.CreditorId);
-                var creditorText = new TextBlock { Text = creditor.Email, HorizontalAlignment = HorizontalAlignment.Right };
+                var creditor = calc.Participants.Single(p => p.Id == debt.Debtor.Id);
+                var creditorText = new TextBlock { Text = creditor.User.Firstname, HorizontalAlignment = HorizontalAlignment.Right };
                 Grid.SetRow(creditorText, 1);
                 Grid.SetColumn(creditorText, 1);
                 grid.Children.Add(creditorText);
@@ -271,7 +297,7 @@ namespace Sujut
                 Grid.SetColumn(amountHeader, 0);
                 grid.Children.Add(amountHeader);
 
-                var amount = new TextBlock { Text = calc.AmountAsString(debt.Amount), HorizontalAlignment = HorizontalAlignment.Right };
+                var amount = new TextBlock { Text = Utils.AmountAsString(calc, debt.Amount), HorizontalAlignment = HorizontalAlignment.Right };
                 Grid.SetRow(amount, 2);
                 Grid.SetColumn(amount, 1);
                 grid.Children.Add(amount);

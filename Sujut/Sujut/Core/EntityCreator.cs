@@ -12,14 +12,14 @@ namespace Sujut.Core
     {
         public const string JsonDateTimeFormat = "yyyy-MM-ddTHH:mm:ss";
 
-        public static IEnumerable<DebtCalculation> DebtCalculationsFromJson(string json)
+        public static IEnumerable<OldDebtCalculation> DebtCalculationsFromJson(string json)
         {
             return DebtCalculationsFromJson(JArray.Parse(json));
         }
 
-        public static IEnumerable<DebtCalculation> DebtCalculationsFromJson(JArray array)
+        public static IEnumerable<OldDebtCalculation> DebtCalculationsFromJson(JArray array)
         {
-            var list = new List<DebtCalculation>();
+            var list = new List<OldDebtCalculation>();
 
             foreach (dynamic entry in array.Children<JObject>())
             {
@@ -29,18 +29,18 @@ namespace Sujut.Core
             return list;
         }
 
-        public static DebtCalculation DebtCalculationFromJson(string json)
+        public static OldDebtCalculation DebtCalculationFromJson(string json)
         {
             return DebtCalculationFromJson(JObject.Parse(json));
         }
 
-        public static DebtCalculation DebtCalculationFromJson(dynamic obj)
+        public static OldDebtCalculation DebtCalculationFromJson(dynamic obj)
         {
-            var calc = new DebtCalculation
+            var calc = new OldDebtCalculation
             {
                 Id = obj.Id,
                 Name = obj.Name,
-                Phase = (DebtCalculationPhase) obj.Phase,
+                Phase = (OldDebtCalculationPhase) obj.Phase,
                 LastActivityTime = obj.LastActivityTime
             };
 
@@ -57,14 +57,14 @@ namespace Sujut.Core
             return calc;
         }
 
-        public static IEnumerable<Participant> ParticipantsFromJson(string json)
+        public static IEnumerable<OldParticipant> ParticipantsFromJson(string json)
         {
             return ParticipantsFromJson(JArray.Parse(json));
         }
 
-        public static IEnumerable<Participant> ParticipantsFromJson(JArray array)
+        public static IEnumerable<OldParticipant> ParticipantsFromJson(JArray array)
         {
-            var list = new List<Participant>();
+            var list = new List<OldParticipant>();
 
             foreach (dynamic entry in array.Children<JObject>())
             {
@@ -74,14 +74,14 @@ namespace Sujut.Core
             return list;
         }
 
-        public static Participant ParticipantFromJson(string json)
+        public static OldParticipant ParticipantFromJson(string json)
         {
             return ParticipantFromJson(JObject.Parse(json));
         }
 
-        public static Participant ParticipantFromJson(dynamic obj)
+        public static OldParticipant ParticipantFromJson(dynamic obj)
         {
-            var participant = new Participant
+            var participant = new OldParticipant
             {
                 Firstname = obj.Firstname,
                 Lastname = obj.Lastname,
@@ -95,14 +95,14 @@ namespace Sujut.Core
             return participant;
         }
 
-        public static IEnumerable<Expense> ExpensesFromJson(string json)
+        public static IEnumerable<OldExpense> ExpensesFromJson(string json)
         {
             return ExpensesFromJson(JArray.Parse(json));
         }
 
-        public static IEnumerable<Expense> ExpensesFromJson(JArray array)
+        public static IEnumerable<OldExpense> ExpensesFromJson(JArray array)
         {
-            var list = new List<Expense>();
+            var list = new List<OldExpense>();
 
             foreach (dynamic entry in array.Children<JObject>())
             {
@@ -112,14 +112,14 @@ namespace Sujut.Core
             return list;
         }
 
-        public static Expense ExpenseFromJson(string json)
+        public static OldExpense ExpenseFromJson(string json)
         {
             return ExpenseFromJson(JObject.Parse(json));
         }
 
-        public static Expense ExpenseFromJson(dynamic obj)
+        public static OldExpense ExpenseFromJson(dynamic obj)
         {
-            var expense = new Expense
+            var expense = new OldExpense
                 {
                     Description = obj.Description,
                     Amount = obj.Amount,
@@ -131,14 +131,14 @@ namespace Sujut.Core
             return expense;
         }
 
-        public static IEnumerable<Debt> DebtsFromJson(string json)
+        public static IEnumerable<OldDebt> DebtsFromJson(string json)
         {
             return DebtsFromJson(JArray.Parse(json));
         }
 
-        public static  IEnumerable<Debt> DebtsFromJson(JArray array)
+        public static  IEnumerable<OldDebt> DebtsFromJson(JArray array)
         {
-            var list = new List<Debt>();
+            var list = new List<OldDebt>();
 
             foreach (dynamic entry in array.Children<JObject>())
             {
@@ -148,14 +148,14 @@ namespace Sujut.Core
             return list;
         }
 
-        public static Debt DebtFromJson(string json)
+        public static OldDebt DebtFromJson(string json)
         {
             return DebtFromJson(JObject.Parse(json));
         }
 
-        public static Debt DebtFromJson(dynamic obj)
+        public static OldDebt DebtFromJson(dynamic obj)
         {
-            var debt = new Debt
+            var debt = new OldDebt
                 {
                     Amount = obj.Amount,
                     CreditorId = obj.CreditorId,

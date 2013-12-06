@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Services.Client;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -9,10 +10,12 @@ using System.Windows.Media;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Sujut.Api;
 using Sujut.Core;
 using Sujut.Resources;
+using Sujut.SujutApi;
 
 namespace Sujut
 {
@@ -43,20 +46,24 @@ namespace Sujut
 
             // Check with server that credentials are OK.
             var webClient = new WebClient();
-            webClient.DownloadStringCompleted += LoginValidated;
-            webClient.DownloadStringAsync(ApiHelper.GetFullApiCallUri("api/validateuser/" + email + "/" + password));
+            webClient.UploadStringCompleted += LoginValidated;
+            webClient.Headers["Content-Type"] = "application/json";
+            webClient.UploadStringAsync(ApiHelper.GetFullApiCallUri("api/Users/Validate"),
+                                        JsonConvert.SerializeObject(new {Email = email, Password = password}));
         }
 
-        private void LoginValidated(object target, DownloadStringCompletedEventArgs eventArgs)
+        private void LoginValidated(object target, UploadStringCompletedEventArgs eventArgs)
         {
             var progBar = ContentPanel.Children.First(c => c is ProgressBar);
             ContentPanel.Children.Remove(progBar);
 
-            var validationSucceeded = bool.Parse(eventArgs.Result);
+            dynamic result = JsonConvert.DeserializeObject(eventArgs.Result);
+            var userId = long.Parse(result.value.Value);
 
-            if (validationSucceeded)
+            if (userId > 0)
             {
                 ApiHelper.SaveCredentials(email, password);
+                ApiHelper.SaveCurrentUserId(userId);
 
                 NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
             }

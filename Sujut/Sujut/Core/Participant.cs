@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sujut.Core
 {
-    public class Participant
+    public class OldParticipant
     {
         public virtual long Id { get; set; }
 

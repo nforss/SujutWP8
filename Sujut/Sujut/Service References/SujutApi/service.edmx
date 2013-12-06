@@ -1,0 +1,247 @@
+﻿<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">
+  <edmx:DataServices m:DataServiceVersion="3.0" m:MaxDataServiceVersion="3.0" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
+    <Schema Namespace="Sujut.Core" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <EntityType Name="DebtCalculation">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Int64" Nullable="false" />
+        <Property Name="Name" Type="Edm.String" />
+        <Property Name="Description" Type="Edm.String" />
+        <Property Name="Currency" Type="Edm.String" />
+        <Property Name="LastActivityTime" Type="Edm.DateTime" Nullable="false" />
+        <Property Name="Phase" Type="Edm.String" Nullable="false" />
+        <NavigationProperty Name="Creator" Relationship="Sujut.Core.Sujut_Core_DebtCalculation_Creator_Sujut_Core_User_CreatorPartner" ToRole="Creator" FromRole="CreatorPartner" />
+        <NavigationProperty Name="Participants" Relationship="Sujut.Core.Sujut_Core_DebtCalculation_Participants_Sujut_Core_Participant_ParticipantsPartner" ToRole="Participants" FromRole="ParticipantsPartner" />
+        <NavigationProperty Name="Expenses" Relationship="Sujut.Core.Sujut_Core_DebtCalculation_Expenses_Sujut_Core_Expense_ExpensesPartner" ToRole="Expenses" FromRole="ExpensesPartner" />
+        <NavigationProperty Name="Debts" Relationship="Sujut.Core.Sujut_Core_DebtCalculation_Debts_Sujut_Core_Debt_DebtsPartner" ToRole="Debts" FromRole="DebtsPartner" />
+      </EntityType>
+      <EntityType Name="Participant">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Int64" Nullable="false" />
+        <Property Name="CanEdit" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="DoneAddingExpenses" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="LastExpenseReminderEmailSent" Type="Edm.DateTime" />
+        <Property Name="HasPaid" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="LastPaymentReminderEmailSent" Type="Edm.DateTime" />
+        <NavigationProperty Name="User" Relationship="Sujut.Core.Sujut_Core_Participant_User_Sujut_Core_User_UserPartner" ToRole="User" FromRole="UserPartner" />
+        <NavigationProperty Name="DebtCalculation" Relationship="Sujut.Core.Sujut_Core_Participant_DebtCalculation_Sujut_Core_DebtCalculation_DebtCalculationPartner" ToRole="DebtCalculation" FromRole="DebtCalculationPartner" />
+      </EntityType>
+      <EntityType Name="Expense">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Int64" Nullable="false" />
+        <Property Name="Amount" Type="Edm.Decimal" Nullable="false" />
+        <Property Name="Description" Type="Edm.String" />
+        <Property Name="AddedTime" Type="Edm.DateTime" Nullable="false" />
+        <NavigationProperty Name="DebtCalculation" Relationship="Sujut.Core.Sujut_Core_Expense_DebtCalculation_Sujut_Core_DebtCalculation_DebtCalculationPartner" ToRole="DebtCalculation" FromRole="DebtCalculationPartner" />
+        <NavigationProperty Name="Payer" Relationship="Sujut.Core.Sujut_Core_Expense_Payer_Sujut_Core_User_PayerPartner" ToRole="Payer" FromRole="PayerPartner" />
+        <NavigationProperty Name="Debtors" Relationship="Sujut.Core.Sujut_Core_Expense_Debtors_Sujut_Core_Debtor_DebtorsPartner" ToRole="Debtors" FromRole="DebtorsPartner" />
+      </EntityType>
+      <EntityType Name="Debt">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Int64" Nullable="false" />
+        <Property Name="Amount" Type="Edm.Decimal" Nullable="false" />
+        <NavigationProperty Name="DebtCalculation" Relationship="Sujut.Core.Sujut_Core_Debt_DebtCalculation_Sujut_Core_DebtCalculation_DebtCalculationPartner" ToRole="DebtCalculation" FromRole="DebtCalculationPartner" />
+        <NavigationProperty Name="Debtor" Relationship="Sujut.Core.Sujut_Core_Debt_Debtor_Sujut_Core_User_DebtorPartner" ToRole="Debtor" FromRole="DebtorPartner" />
+        <NavigationProperty Name="Creditor" Relationship="Sujut.Core.Sujut_Core_Debt_Creditor_Sujut_Core_User_CreditorPartner" ToRole="Creditor" FromRole="CreditorPartner" />
+      </EntityType>
+      <EntityType Name="Debtor">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Int64" Nullable="false" />
+        <NavigationProperty Name="User" Relationship="Sujut.Core.Sujut_Core_Debtor_User_Sujut_Core_User_UserPartner" ToRole="User" FromRole="UserPartner" />
+        <NavigationProperty Name="Expense" Relationship="Sujut.Core.Sujut_Core_Debtor_Expense_Sujut_Core_Expense_ExpensePartner" ToRole="Expense" FromRole="ExpensePartner" />
+      </EntityType>
+      <EntityType Name="User">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Int64" Nullable="false" />
+        <Property Name="Firstname" Type="Edm.String" />
+        <Property Name="Lastname" Type="Edm.String" />
+        <Property Name="AllowSearchByName" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="PaymentInstructions" Type="Edm.String" />
+        <Property Name="TimeZone" Type="Edm.String" />
+        <Property Name="Language" Type="Edm.String" />
+        <Property Name="Culture" Type="Edm.String" />
+        <NavigationProperty Name="Participations" Relationship="Sujut.Core.Sujut_Core_User_Participations_Sujut_Core_Participant_ParticipationsPartner" ToRole="Participations" FromRole="ParticipationsPartner" />
+      </EntityType>
+      <Association Name="Sujut_Core_DebtCalculation_Creator_Sujut_Core_User_CreatorPartner">
+        <End Type="Sujut.Core.User" Role="Creator" Multiplicity="0..1" />
+        <End Type="Sujut.Core.DebtCalculation" Role="CreatorPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="Sujut_Core_DebtCalculation_Participants_Sujut_Core_Participant_ParticipantsPartner">
+        <End Type="Sujut.Core.Participant" Role="Participants" Multiplicity="*" />
+        <End Type="Sujut.Core.DebtCalculation" Role="ParticipantsPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="Sujut_Core_DebtCalculation_Expenses_Sujut_Core_Expense_ExpensesPartner">
+        <End Type="Sujut.Core.Expense" Role="Expenses" Multiplicity="*" />
+        <End Type="Sujut.Core.DebtCalculation" Role="ExpensesPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="Sujut_Core_DebtCalculation_Debts_Sujut_Core_Debt_DebtsPartner">
+        <End Type="Sujut.Core.Debt" Role="Debts" Multiplicity="*" />
+        <End Type="Sujut.Core.DebtCalculation" Role="DebtsPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="Sujut_Core_Participant_User_Sujut_Core_User_UserPartner">
+        <End Type="Sujut.Core.User" Role="User" Multiplicity="0..1" />
+        <End Type="Sujut.Core.Participant" Role="UserPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="Sujut_Core_Participant_DebtCalculation_Sujut_Core_DebtCalculation_DebtCalculationPartner">
+        <End Type="Sujut.Core.DebtCalculation" Role="DebtCalculation" Multiplicity="0..1" />
+        <End Type="Sujut.Core.Participant" Role="DebtCalculationPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="Sujut_Core_Expense_DebtCalculation_Sujut_Core_DebtCalculation_DebtCalculationPartner">
+        <End Type="Sujut.Core.DebtCalculation" Role="DebtCalculation" Multiplicity="0..1" />
+        <End Type="Sujut.Core.Expense" Role="DebtCalculationPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="Sujut_Core_Expense_Payer_Sujut_Core_User_PayerPartner">
+        <End Type="Sujut.Core.User" Role="Payer" Multiplicity="0..1" />
+        <End Type="Sujut.Core.Expense" Role="PayerPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="Sujut_Core_Expense_Debtors_Sujut_Core_Debtor_DebtorsPartner">
+        <End Type="Sujut.Core.Debtor" Role="Debtors" Multiplicity="*" />
+        <End Type="Sujut.Core.Expense" Role="DebtorsPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="Sujut_Core_Debt_DebtCalculation_Sujut_Core_DebtCalculation_DebtCalculationPartner">
+        <End Type="Sujut.Core.DebtCalculation" Role="DebtCalculation" Multiplicity="0..1" />
+        <End Type="Sujut.Core.Debt" Role="DebtCalculationPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="Sujut_Core_Debt_Debtor_Sujut_Core_User_DebtorPartner">
+        <End Type="Sujut.Core.User" Role="Debtor" Multiplicity="0..1" />
+        <End Type="Sujut.Core.Debt" Role="DebtorPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="Sujut_Core_Debt_Creditor_Sujut_Core_User_CreditorPartner">
+        <End Type="Sujut.Core.User" Role="Creditor" Multiplicity="0..1" />
+        <End Type="Sujut.Core.Debt" Role="CreditorPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="Sujut_Core_Debtor_User_Sujut_Core_User_UserPartner">
+        <End Type="Sujut.Core.User" Role="User" Multiplicity="0..1" />
+        <End Type="Sujut.Core.Debtor" Role="UserPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="Sujut_Core_Debtor_Expense_Sujut_Core_Expense_ExpensePartner">
+        <End Type="Sujut.Core.Expense" Role="Expense" Multiplicity="0..1" />
+        <End Type="Sujut.Core.Debtor" Role="ExpensePartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="Sujut_Core_User_Participations_Sujut_Core_Participant_ParticipationsPartner">
+        <End Type="Sujut.Core.Participant" Role="Participations" Multiplicity="*" />
+        <End Type="Sujut.Core.User" Role="ParticipationsPartner" Multiplicity="0..1" />
+      </Association>
+    </Schema>
+    <Schema Namespace="Sujut.Models.Api" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <EntityType Name="ExpenseApiModel" BaseType="Sujut.Core.Expense">
+        <Property Name="PayerId" Type="Edm.Int64" Nullable="false" />
+        <Property Name="DebtorIds" Type="Collection(Edm.Int64)" Nullable="false" />
+      </EntityType>
+    </Schema>
+    <Schema Namespace="Default" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <EntityContainer Name="Container" m:IsDefaultEntityContainer="true">
+        <EntitySet Name="DebtCalculations" EntityType="Sujut.Core.DebtCalculation" />
+        <EntitySet Name="Participants" EntityType="Sujut.Core.Participant" />
+        <EntitySet Name="Expenses" EntityType="Sujut.Core.Expense" />
+        <EntitySet Name="Debts" EntityType="Sujut.Core.Debt" />
+        <EntitySet Name="Debtors" EntityType="Sujut.Core.Debtor" />
+        <EntitySet Name="Users" EntityType="Sujut.Core.User" />
+        <FunctionImport Name="AddExistingUser" IsBindable="true" m:IsAlwaysBindable="true">
+          <Parameter Name="bindingParameter" Type="Sujut.Core.DebtCalculation" />
+          <Parameter Name="UserId" Type="Edm.Int64" Nullable="false" />
+        </FunctionImport>
+        <FunctionImport Name="AddNewUser" IsBindable="true" m:IsAlwaysBindable="true">
+          <Parameter Name="bindingParameter" Type="Sujut.Core.DebtCalculation" />
+          <Parameter Name="Email" Type="Edm.String" FixedLength="false" Unicode="false" />
+          <Parameter Name="Firstname" Type="Edm.String" FixedLength="false" Unicode="false" />
+          <Parameter Name="Lastname" Type="Edm.String" FixedLength="false" Unicode="false" />
+        </FunctionImport>
+        <FunctionImport Name="Start" IsBindable="true" m:IsAlwaysBindable="true">
+          <Parameter Name="bindingParameter" Type="Sujut.Core.DebtCalculation" />
+        </FunctionImport>
+        <FunctionImport Name="DoneAddingExpenses" IsBindable="true" m:IsAlwaysBindable="true">
+          <Parameter Name="bindingParameter" Type="Sujut.Core.DebtCalculation" />
+        </FunctionImport>
+        <FunctionImport Name="Paid" IsBindable="true" m:IsAlwaysBindable="true">
+          <Parameter Name="bindingParameter" Type="Sujut.Core.DebtCalculation" />
+        </FunctionImport>
+        <FunctionImport Name="Validate" ReturnType="Edm.Int64" IsBindable="true" m:IsAlwaysBindable="true">
+          <Parameter Name="bindingParameter" Type="Collection(Sujut.Core.User)" Nullable="false" />
+          <Parameter Name="Email" Type="Edm.String" FixedLength="false" Unicode="false" />
+          <Parameter Name="Password" Type="Edm.String" FixedLength="false" Unicode="false" />
+        </FunctionImport>
+        <FunctionImport Name="Register" IsBindable="true" m:IsAlwaysBindable="true">
+          <Parameter Name="bindingParameter" Type="Collection(Sujut.Core.User)" Nullable="false" />
+          <Parameter Name="Email" Type="Edm.String" FixedLength="false" Unicode="false" />
+          <Parameter Name="Firstname" Type="Edm.String" FixedLength="false" Unicode="false" />
+          <Parameter Name="Lastname" Type="Edm.String" FixedLength="false" Unicode="false" />
+          <Parameter Name="Password" Type="Edm.String" FixedLength="false" Unicode="false" />
+          <Parameter Name="Language" Type="Edm.String" FixedLength="false" Unicode="false" />
+          <Parameter Name="Culture" Type="Edm.String" FixedLength="false" Unicode="false" />
+        </FunctionImport>
+        <AssociationSet Name="Sujut_Core_DebtCalculation_Creator_Sujut_Core_User_CreatorPartnerSet" Association="Sujut.Core.Sujut_Core_DebtCalculation_Creator_Sujut_Core_User_CreatorPartner">
+          <End Role="CreatorPartner" EntitySet="DebtCalculations" />
+          <End Role="Creator" EntitySet="Users" />
+        </AssociationSet>
+        <AssociationSet Name="Sujut_Core_DebtCalculation_Participants_Sujut_Core_Participant_ParticipantsPartnerSet" Association="Sujut.Core.Sujut_Core_DebtCalculation_Participants_Sujut_Core_Participant_ParticipantsPartner">
+          <End Role="ParticipantsPartner" EntitySet="DebtCalculations" />
+          <End Role="Participants" EntitySet="Participants" />
+        </AssociationSet>
+        <AssociationSet Name="Sujut_Core_DebtCalculation_Expenses_Sujut_Core_Expense_ExpensesPartnerSet" Association="Sujut.Core.Sujut_Core_DebtCalculation_Expenses_Sujut_Core_Expense_ExpensesPartner">
+          <End Role="ExpensesPartner" EntitySet="DebtCalculations" />
+          <End Role="Expenses" EntitySet="Expenses" />
+        </AssociationSet>
+        <AssociationSet Name="Sujut_Core_DebtCalculation_Debts_Sujut_Core_Debt_DebtsPartnerSet" Association="Sujut.Core.Sujut_Core_DebtCalculation_Debts_Sujut_Core_Debt_DebtsPartner">
+          <End Role="DebtsPartner" EntitySet="DebtCalculations" />
+          <End Role="Debts" EntitySet="Debts" />
+        </AssociationSet>
+        <AssociationSet Name="Sujut_Core_Participant_User_Sujut_Core_User_UserPartnerSet" Association="Sujut.Core.Sujut_Core_Participant_User_Sujut_Core_User_UserPartner">
+          <End Role="UserPartner" EntitySet="Participants" />
+          <End Role="User" EntitySet="Users" />
+        </AssociationSet>
+        <AssociationSet Name="Sujut_Core_Participant_DebtCalculation_Sujut_Core_DebtCalculation_DebtCalculationPartnerSet" Association="Sujut.Core.Sujut_Core_Participant_DebtCalculation_Sujut_Core_DebtCalculation_DebtCalculationPartner">
+          <End Role="DebtCalculationPartner" EntitySet="Participants" />
+          <End Role="DebtCalculation" EntitySet="DebtCalculations" />
+        </AssociationSet>
+        <AssociationSet Name="Sujut_Core_Expense_DebtCalculation_Sujut_Core_DebtCalculation_DebtCalculationPartnerSet" Association="Sujut.Core.Sujut_Core_Expense_DebtCalculation_Sujut_Core_DebtCalculation_DebtCalculationPartner">
+          <End Role="DebtCalculationPartner" EntitySet="Expenses" />
+          <End Role="DebtCalculation" EntitySet="DebtCalculations" />
+        </AssociationSet>
+        <AssociationSet Name="Sujut_Core_Expense_Payer_Sujut_Core_User_PayerPartnerSet" Association="Sujut.Core.Sujut_Core_Expense_Payer_Sujut_Core_User_PayerPartner">
+          <End Role="PayerPartner" EntitySet="Expenses" />
+          <End Role="Payer" EntitySet="Users" />
+        </AssociationSet>
+        <AssociationSet Name="Sujut_Core_Expense_Debtors_Sujut_Core_Debtor_DebtorsPartnerSet" Association="Sujut.Core.Sujut_Core_Expense_Debtors_Sujut_Core_Debtor_DebtorsPartner">
+          <End Role="DebtorsPartner" EntitySet="Expenses" />
+          <End Role="Debtors" EntitySet="Debtors" />
+        </AssociationSet>
+        <AssociationSet Name="Sujut_Core_Debt_DebtCalculation_Sujut_Core_DebtCalculation_DebtCalculationPartnerSet" Association="Sujut.Core.Sujut_Core_Debt_DebtCalculation_Sujut_Core_DebtCalculation_DebtCalculationPartner">
+          <End Role="DebtCalculationPartner" EntitySet="Debts" />
+          <End Role="DebtCalculation" EntitySet="DebtCalculations" />
+        </AssociationSet>
+        <AssociationSet Name="Sujut_Core_Debt_Debtor_Sujut_Core_User_DebtorPartnerSet" Association="Sujut.Core.Sujut_Core_Debt_Debtor_Sujut_Core_User_DebtorPartner">
+          <End Role="DebtorPartner" EntitySet="Debts" />
+          <End Role="Debtor" EntitySet="Users" />
+        </AssociationSet>
+        <AssociationSet Name="Sujut_Core_Debt_Creditor_Sujut_Core_User_CreditorPartnerSet" Association="Sujut.Core.Sujut_Core_Debt_Creditor_Sujut_Core_User_CreditorPartner">
+          <End Role="CreditorPartner" EntitySet="Debts" />
+          <End Role="Creditor" EntitySet="Users" />
+        </AssociationSet>
+        <AssociationSet Name="Sujut_Core_Debtor_User_Sujut_Core_User_UserPartnerSet" Association="Sujut.Core.Sujut_Core_Debtor_User_Sujut_Core_User_UserPartner">
+          <End Role="UserPartner" EntitySet="Debtors" />
+          <End Role="User" EntitySet="Users" />
+        </AssociationSet>
+        <AssociationSet Name="Sujut_Core_Debtor_Expense_Sujut_Core_Expense_ExpensePartnerSet" Association="Sujut.Core.Sujut_Core_Debtor_Expense_Sujut_Core_Expense_ExpensePartner">
+          <End Role="ExpensePartner" EntitySet="Debtors" />
+          <End Role="Expense" EntitySet="Expenses" />
+        </AssociationSet>
+        <AssociationSet Name="Sujut_Core_User_Participations_Sujut_Core_Participant_ParticipationsPartnerSet" Association="Sujut.Core.Sujut_Core_User_Participations_Sujut_Core_Participant_ParticipationsPartner">
+          <End Role="ParticipationsPartner" EntitySet="Users" />
+          <End Role="Participations" EntitySet="Participants" />
+        </AssociationSet>
+      </EntityContainer>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Services.Client;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -12,19 +14,23 @@ using Microsoft.Phone.Shell;
 using Sujut.Api;
 using Sujut.Core;
 using Sujut.Resources;
+using Sujut.SujutApi;
 
 namespace Sujut
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        private string json =
-            "[{\"Id\":1,\"Name\":\"Saunominen Herttoniemessä\",\"Phase\":\"CollectingExpenses\"},{\"Id\":5,\"Name\":\"Testing\",\"Phase\":\"CollectingPayments\"},{\"Id\":6,\"Name\":\"Barbie at the Shomaker's Village\",\"Phase\":\"Canceled\"},{\"Id\":7,\"Name\":\"Barbie at the Shomaker's Village\",\"Phase\":\"GatheringParticipants\"},{\"Id\":9,\"Name\":\"Barbie at the Shomaker's Village\",\"Phase\":\"GatheringParticipants\"},{\"Id\":10,\"Name\":\"Barbie at the Shomaker's Village\",\"Phase\":\"GatheringParticipants\"},{\"Id\":11,\"Name\":\"Blabla\",\"Phase\":\"CollectingExpenses\"},{\"Id\":12,\"Name\":\"Testing\",\"Phase\":\"CollectingPayments\"},{\"Id\":13,\"Name\":\"mailtest\",\"Phase\":\"CollectingExpenses\"},{\"Id\":14,\"Name\":\"mail 2\",\"Phase\":\"CollectingExpenses\"},{\"Id\":15,\"Name\":\"Currency test\",\"Phase\":\"CollectingExpenses\"},{\"Id\":16,\"Name\":\"Concurrency\",\"Phase\":\"CollectingExpenses\"},{\"Id\":17,\"Name\":\"jeee\",\"Phase\":\"CollectingExpenses\"},{\"Id\":18,\"Name\":\"bleh\",\"Phase\":\"GatheringParticipants\"},{\"Id\":19,\"Name\":\"New controller methods\",\"Phase\":\"CollectingExpenses\"}]";
+        private Container _container;
+        private DataServiceCollection<DebtCalculation> _calculations;
 
         // Constructor
         public MainPage()
         {
             InitializeComponent();
             
+            _container = ApiHelper.GetContainer();
+            _calculations = new DataServiceCollection<DebtCalculation>(_container);
+
             ShowDebtCalculations();
         }
 
@@ -56,12 +62,11 @@ namespace Sujut
 
             createNewButton.Click += Logout_Click;
             ApplicationBar.Buttons.Add(syncButton);
-
-            var webClient = ApiHelper.AuthClient();
-            webClient.DownloadStringCompleted += BuildButtonList;
-            webClient.DownloadStringAsync(ApiHelper.GetFullApiCallUri("api/debtcalculation/all/"));
-
-            //BuildButtonList(null, null);
+            
+            var query = _container.DebtCalculations.OrderByDescending(dc => dc.LastActivityTime);
+            
+            _calculations.LoadCompleted += BuildButtonList;
+            _calculations.LoadAsync(query);
         }
 
         private void CreateNew_Click(object sender, EventArgs eventArgs)
@@ -76,47 +81,55 @@ namespace Sujut
             NavigationService.Navigate(new Uri("/Login.xaml", UriKind.Relative));
         }
 
-        private void BuildButtonList(object target, DownloadStringCompletedEventArgs eventArgs)
+        private void BuildButtonList(object target, LoadCompletedEventArgs eventArgs)
         {
-            ButtonList.Children.Clear();
-
-            var calcs = EntityCreator.DebtCalculationsFromJson(eventArgs.Result);
-            //var calcs = EntityCreator.DebtCalculationsFromJson(json);
-
-            foreach (var calc in calcs.OrderByDescending(calc => calc.LastActivityTime))
+            if (eventArgs.Error != null)
             {
-                var grid = new Grid();
-                grid.RowDefinitions.Add(new RowDefinition());
-                grid.RowDefinitions.Add(new RowDefinition());
+                // Show error message
+            }
+            else
+            {
+                ButtonList.Children.Clear();
 
-                var nameBlock = new TextBlock { Text = calc.Name, HorizontalAlignment = HorizontalAlignment.Center };
-                Grid.SetRow(nameBlock, 0);
-                grid.Children.Add(nameBlock);
+                var calcs = _calculations;
 
-                if (calc.LastActivityTime != null)
+                foreach (var calc in calcs)
                 {
-                    var dateBlock = new TextBlock
-                    {
-                        Text = ((DateTime)calc.LastActivityTime).ToShortDateString() + " " + ((DateTime)calc.LastActivityTime).ToShortTimeString(),
-                        FontSize = 15,
-                        HorizontalAlignment = HorizontalAlignment.Center
-                    };
+                    var grid = new Grid();
+                    grid.RowDefinitions.Add(new RowDefinition());
+                    grid.RowDefinitions.Add(new RowDefinition());
 
-                    Grid.SetRow(dateBlock, 1);
-                    grid.Children.Add(dateBlock);
+                    var nameBlock = new TextBlock {Text = calc.Name, HorizontalAlignment = HorizontalAlignment.Center};
+                    Grid.SetRow(nameBlock, 0);
+                    grid.Children.Add(nameBlock);
+
+                    if (calc.LastActivityTime != DateTime.MinValue)
+                    {
+                        var dateBlock = new TextBlock
+                            {
+                                Text =
+                                    (calc.LastActivityTime).ToShortDateString() + " " +
+                                    (calc.LastActivityTime).ToShortTimeString(),
+                                FontSize = 15,
+                                HorizontalAlignment = HorizontalAlignment.Center
+                            };
+
+                        Grid.SetRow(dateBlock, 1);
+                        grid.Children.Add(dateBlock);
+                    }
+
+                    var button = new Button
+                        {
+                            Content = grid,
+                            DataContext = new {DebtCalculationId = calc.Id},
+                            Foreground = (SolidColorBrush) Application.Current.Resources["BlackAccentBrush"],
+                            BorderBrush = (SolidColorBrush) Application.Current.Resources["BlackAccentBrush"]
+                        };
+
+                    button.Click += Button_Click;
+
+                    ButtonList.Children.Add(button);
                 }
-
-                var button = new Button
-                    {
-                        Content = grid, 
-                        DataContext = new { DebtCalculationId = calc.Id },
-                        Foreground = (SolidColorBrush)Application.Current.Resources["BlackAccentBrush"],
-                        BorderBrush = (SolidColorBrush)Application.Current.Resources["BlackAccentBrush"]
-                    };
-
-                button.Click += Button_Click;
-
-                ButtonList.Children.Add(button);
             }
         }
 

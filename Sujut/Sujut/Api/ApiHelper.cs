@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using Sujut.Core;
+using Sujut.SujutApi;
 
 namespace Sujut.Api
 {
@@ -17,6 +18,25 @@ namespace Sujut.Api
         public static string BaseApiUrl = "https://sujut.apphb.com/";
         private const string CredentialsFolderName = "Credentials";
         private const string CredentialsFileName = "Credentials";
+        private const string CurrentUserIdFolderName = "CurrentUserID";
+        private const string CurrentUserIdFileName = "CurrentUserID";
+
+        private static readonly Uri ApiUri = new Uri(BaseApiUrl + "api/");
+
+        public static Container GetContainer()
+        {
+            var usernameAndPswd = GetUserNameAndPassword();
+
+            var username = usernameAndPswd.Split(':').First();
+            var password = usernameAndPswd.Split(':').Last();
+
+            var container = new Container(ApiUri)
+                {
+                    Credentials = new NetworkCredential(username, password)
+                };
+
+            return container;
+        }
 
         public static bool UserIsLoggedIn()
         {
@@ -64,6 +84,47 @@ namespace Sujut.Api
             }
         }
 
+        public static void SaveCurrentUserId(long id)
+        {
+            var stringToStore = id.ToString();
+
+            // Obtain an isolated store for an application.
+            try
+            {
+                using (var store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (!store.DirectoryExists(CurrentUserIdFolderName))
+                    {
+                        store.CreateDirectory(CurrentUserIdFolderName);
+                    }
+
+                    var filePath = Path.Combine(CurrentUserIdFolderName, CurrentUserIdFileName);
+
+                    if (store.FileExists(filePath))
+                    {
+                        // Can only have one logged-in user at a time (at this point)
+                        store.DeleteFile(filePath);
+                    }
+
+                    try
+                    {
+                        using (var sw = new StreamWriter(store.CreateFile(filePath)))
+                        {
+                            sw.WriteLine(stringToStore);
+                        }
+                    }
+                    catch (IsolatedStorageException ex)
+                    {
+                        // TODO: Handle that file could not be written to
+                    }
+                }
+            }
+            catch (IsolatedStorageException ex)
+            {
+                // TODO: Handle that store was unable to be accessed.
+            }
+        }
+
         public static Uri GetFullApiCallUri(string uri)
         {
             return new Uri(BaseApiUrl + uri, UriKind.Absolute);
@@ -76,6 +137,13 @@ namespace Sujut.Api
                 using (var store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     var filePath = Path.Combine(CredentialsFolderName, CredentialsFileName);
+
+                    if (store.FileExists(filePath))
+                    {
+                        store.DeleteFile(filePath);
+                    }
+
+                    filePath = Path.Combine(CurrentUserIdFolderName, CurrentUserIdFileName);
 
                     if (store.FileExists(filePath))
                     {
@@ -105,20 +173,9 @@ namespace Sujut.Api
             return webClient;
         }
 
-        public static Participant CurrentUser(DebtCalculation calculation)
+        public static long CurrentUserId()
         {
-            var usernameAndPassword = GetUserNameAndPassword();
-
-            if (usernameAndPassword == null)
-            {
-                throw new Exception("Username and password not in Isolated storage.");
-            }
-
-            var username = usernameAndPassword.Split(':')[0];
-
-            var currentUser = calculation.Participants.Single(p => p.Email == username);
-
-            return currentUser;
+            return GetCurrentUserId();
         }
 
         private static string GetUserNameAndPassword()
@@ -152,6 +209,39 @@ namespace Sujut.Api
             }
 
             return null;
+        }
+
+        private static long GetCurrentUserId()
+        {
+            try
+            {
+                using (var store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (store.DirectoryExists(CurrentUserIdFolderName))
+                    {
+                        var filePath = Path.Combine(CurrentUserIdFolderName, CurrentUserIdFileName);
+
+                        try
+                        {
+                            using (var reader = new StreamReader(store.OpenFile(filePath, FileMode.Open, FileAccess.Read)))
+                            {
+                                var contents = reader.ReadToEnd();
+
+                                return long.Parse(contents.Trim());
+                            }
+                        }
+                        catch (IsolatedStorageException ex)
+                        {
+                        }
+                    }
+                }
+            }
+            catch (IsolatedStorageException ex)
+            {
+                // TODO: Handle that store was unable to be accessed.
+            }
+
+            return 0;
         }
     }
 }

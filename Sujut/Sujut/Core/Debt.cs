@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sujut.Core
 {
-    public class Debt
+    public class OldDebt
     {
         public decimal Amount { get; set; }
 
