@@ -65,10 +65,6 @@ namespace Sujut
 
             ContentPanel.Children.Add(new ProgressBar { IsIndeterminate = true, Width = 300, Margin = new Thickness(0, 30, 0, 0) });
 
-            //var webClient = ApiHelper.AuthClient();
-            //webClient.DownloadStringCompleted += ShowCalculation;
-            //webClient.DownloadStringAsync(ApiHelper.GetFullApiCallUri("api/debtcalculation/show/" + id));
-
             var query = _container.DebtCalculations
                 .Expand(dc => dc.Expenses)
                 .Expand(dc => dc.Participants)
@@ -78,7 +74,6 @@ namespace Sujut
             _calculations.LoadAsync(query);
         }
 
-        //private void ShowCalculation(object target, DownloadStringCompletedEventArgs eventArgs)
         private void ShowCalculation(object target, LoadCompletedEventArgs eventArgs)
         {
             var progBar = ContentPanel.Children.First(c => c is ProgressBar);
@@ -91,7 +86,6 @@ namespace Sujut
                 return;
             }
 
-            //var calc = EntityCreator.DebtCalculationFromJson(eventArgs.Result);
             var currentUserId = ApiHelper.CurrentUserId();
 
             PageHeader.Text = calc.Name;

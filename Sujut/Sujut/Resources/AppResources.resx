@@ -138,7 +138,7 @@
     <value>Debt calculations</value>
   </data>
   <data name="CreateNew" xml:space="preserve">
-    <value>New</value>
+    <value>Create new</value>
   </data>
   <data name="Sync" xml:space="preserve">
     <value>Sync</value>
@@ -193,5 +193,20 @@
   </data>
   <data name="To" xml:space="preserve">
     <value>To</value>
+  </data>
+  <data name="Currency" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="ErrorProcessingRequest" xml:space="preserve">
+    <value>An error occurred while processing your request</value>
+  </data>
+  <data name="LoginFailed" xml:space="preserve">
+    <value>Login failed</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>New</value>
   </data>
 </root>

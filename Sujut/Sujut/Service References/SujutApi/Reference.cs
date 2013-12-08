@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 
 // Original file name:
-// Generation date: 12/1/2013 5:40:26 PM
+// Generation date: 12/8/2013 6:37:09 PM
 namespace Sujut.SujutApi
 {
     
@@ -1523,7 +1523,7 @@ namespace Sujut.SujutApi
     }
 }
 // Original file name:
-// Generation date: 12/1/2013 5:40:26 PM
+// Generation date: 12/8/2013 6:37:09 PM
 namespace Sujut.Models.Api
 {
     

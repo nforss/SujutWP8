@@ -46,8 +46,10 @@ namespace Sujut
 
             // Check with server that credentials are OK.
             var webClient = new WebClient();
+            webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
+            webClient.Encoding = Encoding.UTF8;
+
             webClient.UploadStringCompleted += LoginValidated;
-            webClient.Headers["Content-Type"] = "application/json";
             webClient.UploadStringAsync(ApiHelper.GetFullApiCallUri("api/Users/Validate"),
                                         JsonConvert.SerializeObject(new {Email = email, Password = password}));
         }
@@ -57,19 +59,26 @@ namespace Sujut
             var progBar = ContentPanel.Children.First(c => c is ProgressBar);
             ContentPanel.Children.Remove(progBar);
 
-            dynamic result = JsonConvert.DeserializeObject(eventArgs.Result);
-            var userId = long.Parse(result.value.Value);
-
-            if (userId > 0)
+            if (eventArgs.Error != null)
             {
-                ApiHelper.SaveCredentials(email, password);
-                ApiHelper.SaveCurrentUserId(userId);
-
-                NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
+                MessageBox.Show(AppResources.ErrorProcessingRequest);
             }
             else
             {
-                // Show failure message
+                dynamic result = JsonConvert.DeserializeObject(eventArgs.Result);
+                var userId = long.Parse(result.value.Value);
+
+                if (userId > 0)
+                {
+                    ApiHelper.SaveCredentials(email, password);
+                    ApiHelper.SaveCurrentUserId(userId);
+
+                    NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
+                }
+                else
+                {
+                    MessageBox.Show(AppResources.LoginFailed);
+                }
             }
         }
     }

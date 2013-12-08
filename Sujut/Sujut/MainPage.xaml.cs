@@ -27,9 +27,31 @@ namespace Sujut
         public MainPage()
         {
             InitializeComponent();
-            
-            _container = ApiHelper.GetContainer();
-            _calculations = new DataServiceCollection<DebtCalculation>(_container);
+
+            // Cannot localize ApplicationBar unless it is created in code behind
+            ApplicationBar = new ApplicationBar
+            {
+                BackgroundColor = Color.FromArgb(255, 0x86, 0xC4, 0x40), //"#86C440"
+                Opacity = 1,
+                ForegroundColor = Colors.White
+            };
+            var createNewButton = new ApplicationBarIconButton
+            {
+                Text = AppResources.New,
+                IconUri = new Uri("/Assets/Icons/add.png", UriKind.Relative)
+            };
+
+            createNewButton.Click += CreateNew_Click;
+            ApplicationBar.Buttons.Add(createNewButton);
+
+            var logoutButton = new ApplicationBarIconButton
+            {
+                Text = AppResources.Logout,
+                IconUri = new Uri("/Assets/Icons/close.png", UriKind.Relative)
+            };
+
+            logoutButton.Click += Logout_Click;
+            ApplicationBar.Buttons.Add(logoutButton);
 
             ShowDebtCalculations();
         }
@@ -38,31 +60,9 @@ namespace Sujut
         {
             ButtonList.Children.Add(new ProgressBar { IsIndeterminate = true, Width = 300, Margin = new Thickness(0, 30, 0, 0) });
 
-            // Cannot localize ApplicationBar unless it is created in code behind
-            ApplicationBar = new ApplicationBar
-                {
-                    BackgroundColor = Color.FromArgb(255, 0x86, 0xC4, 0x40), //"#86C440"
-                    Opacity = 1,
-                    ForegroundColor = Colors.White
-                }; 
-            var createNewButton = new ApplicationBarIconButton
-            {
-                Text = AppResources.CreateNew,
-                IconUri = new Uri("/Assets/Icons/add.png", UriKind.Relative)
-            };
+            _container = ApiHelper.GetContainer();
+            _calculations = new DataServiceCollection<DebtCalculation>(_container);
 
-            createNewButton.Click += CreateNew_Click;
-            ApplicationBar.Buttons.Add(createNewButton);
-
-            var syncButton = new ApplicationBarIconButton
-            {
-                Text = AppResources.Logout,
-                IconUri = new Uri("/Assets/Icons/close.png", UriKind.Relative)
-            };
-
-            createNewButton.Click += Logout_Click;
-            ApplicationBar.Buttons.Add(syncButton);
-            
             var query = _container.DebtCalculations.OrderByDescending(dc => dc.LastActivityTime);
             
             _calculations.LoadCompleted += BuildButtonList;
@@ -71,7 +71,7 @@ namespace Sujut
 
         private void CreateNew_Click(object sender, EventArgs eventArgs)
         {
-            NavigationService.Navigate(new Uri("/CreateNew.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/NewCalculation.xaml", UriKind.Relative));
         }
 
         private void Logout_Click(object sender, EventArgs eventArgs)
@@ -83,14 +83,14 @@ namespace Sujut
 
         private void BuildButtonList(object target, LoadCompletedEventArgs eventArgs)
         {
+            ButtonList.Children.Clear();
+
             if (eventArgs.Error != null)
             {
-                // Show error message
+                MessageBox.Show(AppResources.ErrorProcessingRequest);
             }
             else
             {
-                ButtonList.Children.Clear();
-
                 var calcs = _calculations;
 
                 foreach (var calc in calcs)

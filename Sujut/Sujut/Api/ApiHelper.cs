@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
@@ -9,13 +10,14 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using Sujut.Core;
+using Sujut.Helpers;
 using Sujut.SujutApi;
 
 namespace Sujut.Api
 {
     public class ApiHelper
     {
-        public static string BaseApiUrl = "https://sujut.apphb.com/";
+        public static string BaseApiUrl = "https://sujut-testing.apphb.com/";
         private const string CredentialsFolderName = "Credentials";
         private const string CredentialsFileName = "Credentials";
         private const string CurrentUserIdFolderName = "CurrentUserID";
@@ -167,8 +169,11 @@ namespace Sujut.Api
             }
 
             var webClient = new WebClient();
+
             webClient.Headers[HttpRequestHeader.Authorization] = "Basic " + 
                 Convert.ToBase64String(Encoding.UTF8.GetBytes(usernameAndPassword));
+            webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
+            webClient.Encoding = Encoding.UTF8;
 
             return webClient;
         }
