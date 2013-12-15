@@ -17,6 +17,7 @@ using Sujut.Api;
 using Sujut.Core;
 using Sujut.Resources;
 using Sujut.SujutApi;
+using Sujut.Helpers;
 using DebtCalculation = Sujut.SujutApi.DebtCalculation;
 
 namespace Sujut
@@ -66,8 +67,12 @@ namespace Sujut
             ContentPanel.Children.Add(new ProgressBar { IsIndeterminate = true, Width = 300, Margin = new Thickness(0, 30, 0, 0) });
 
             var query = _container.DebtCalculations
-                .Expand(dc => dc.Expenses)
-                .Expand(dc => dc.Participants)
+                .Expand("Expenses/Payer")
+                .Expand("Expenses/Debtors/User")
+                .Expand("Participants/User")
+                .Expand("Debts/Debtor")
+                .Expand("Debts/Creditor")
+                .Expand(dc => dc.Creator)
                 .Where(dc => dc.Id == id);
 
             _calculations.LoadCompleted += ShowCalculation;
@@ -106,7 +111,7 @@ namespace Sujut
             //    ApplicationBar.Buttons.Add(editButton);
             //}
 
-            if (calc.Phase == "CollectingExpenses")
+            if (calc.Phase == DebtCalculationPhase.CollectingExpenses.ToString())
             {
                 MainPivot.Items.Add(ExpensesItem);
 
@@ -125,7 +130,8 @@ namespace Sujut
                 }
             }
 
-            if (calc.Phase == "CollectingPayments")
+            if (calc.Phase == DebtCalculationPhase.CollectingPayments.ToString() ||
+                calc.Phase == DebtCalculationPhase.Finished.ToString())
             {
                 MainPivot.Items.Add(DebtsItem);
                 MainPivot.Items.Add(ExpensesItem);
@@ -151,46 +157,48 @@ namespace Sujut
 
         private void ShowParticipants(DebtCalculation calc)
         {
-            var i = 0;
+            var i = 1;
             foreach (var participant in calc.Participants)
             {
-                var grid = new Grid();
-                grid.ColumnDefinitions.Add(new ColumnDefinition());
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(ParticipantsAddedExpHeader.ActualWidth) });
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(ParticipantsHasPaidHeader.ActualWidth) });
-                grid.RowDefinitions.Add(new RowDefinition());
-                grid.RowDefinitions.Add(new RowDefinition());
+                ParticipantsGrid.RowDefinitions.Add(new RowDefinition());
 
-                if (i % 2 == 0)
+                if (i % 2 == 1)
                 {
-                    grid.Background = (SolidColorBrush)Application.Current.Resources["SujutLightGreenBrush"];
+                    var background = new Grid
+                        {
+                            Background = (SolidColorBrush) Application.Current.Resources["SujutLightGreenBrush"]
+                        };
+
+                    Grid.SetRow(background, i);
+                    Grid.SetColumn(background, 0);
+                    Grid.SetColumnSpan(background, 3);
+
+                    ParticipantsGrid.Children.Add(background);
                 }
 
-                var email = new TextBlock { Text = "Former email" };
-                Grid.SetRow(email, 0);
-                Grid.SetColumn(email, 0);
-                grid.Children.Add(email);
+                var name = new TextBlock { Text = participant.User.FullName() };
+                Grid.SetRow(name, i);
+                Grid.SetColumn(name, 0);
+                ParticipantsGrid.Children.Add(name);
 
-                var addedExpenses = new TextBlock { Text = participant.DoneAddingExpenses ? "X" : " ", HorizontalAlignment = HorizontalAlignment.Center };
-                Grid.SetRow(addedExpenses, 0);
+                var addedExpenses = new TextBlock
+                    {
+                        Text = participant.DoneAddingExpenses ? "✓" : " ",
+                        HorizontalAlignment = HorizontalAlignment.Center
+                    };
+                Grid.SetRow(addedExpenses, i);
                 Grid.SetColumn(addedExpenses, 1);
-                grid.Children.Add(addedExpenses);
+                ParticipantsGrid.Children.Add(addedExpenses);
 
-                var hasPaid = new TextBlock { Text = participant.HasPaid ? "X" : " ", HorizontalAlignment = HorizontalAlignment.Center };
-                Grid.SetRow(hasPaid, 0);
+                var hasPaid = new TextBlock
+                    {
+                        Text = participant.HasPaid ? "✓" : " ",
+                        HorizontalAlignment = HorizontalAlignment.Center
+                    };
+                Grid.SetRow(hasPaid, i);
                 Grid.SetColumn(hasPaid, 2);
-                grid.Children.Add(hasPaid);
-
-                if (participant.User.Firstname != null || participant.User.Lastname != null)
-                {
-                    var nameBlock = new TextBlock { Text = participant.User.Firstname + " " + participant.User.Lastname };
-                    Grid.SetRow(nameBlock, 1);
-                    Grid.SetColumn(nameBlock, 0);
-                    grid.Children.Add(nameBlock);
-                }
-
-                ParticipantsList.Children.Add(grid);
-
+                ParticipantsGrid.Children.Add(hasPaid);
+                
                 i++;
             }
         }
@@ -199,31 +207,51 @@ namespace Sujut
         {
             var totalParticipants = calc.Participants.Count();
 
-            var i = 0;
+            var i = 1;
             foreach (var expense in calc.Expenses)
             {
-                var grid = new Grid();
-                grid.ColumnDefinitions.Add(new ColumnDefinition());
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(ExpensesAmountHeader.ActualWidth) });
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(ExpensesParticipantsHeader.ActualWidth) });
-                grid.RowDefinitions.Add(new RowDefinition());
-                grid.RowDefinitions.Add(new RowDefinition());
+                ExpensesGrid.RowDefinitions.Add(new RowDefinition());
+                ExpensesGrid.RowDefinitions.Add(new RowDefinition());
 
-                if (i % 2 == 0)
+                if ((i/2) % 2 == 0)
                 {
-                    grid.Background = (SolidColorBrush)Application.Current.Resources["SujutLightGreenBrush"];
+                    var background = new Grid
+                    {
+                        Background = (SolidColorBrush)Application.Current.Resources["SujutLightGreenBrush"]
+                    };
+
+                    Grid.SetRow(background, i);
+                    Grid.SetColumn(background, 0);
+                    Grid.SetColumnSpan(background, 3);
+
+                    ExpensesGrid.Children.Add(background);
+
+                    var background2 = new Grid
+                    {
+                        Background = (SolidColorBrush)Application.Current.Resources["SujutLightGreenBrush"]
+                    };
+
+                    Grid.SetRow(background2, i + 1);
+                    Grid.SetColumn(background2, 0);
+                    Grid.SetColumnSpan(background2, 3);
+
+                    ExpensesGrid.Children.Add(background2);
                 }
 
-                var payer = calc.Participants.Single(p => p.Id == expense.Payer.Id);
-                var payerText = new TextBlock { Text = payer.User.Firstname };
-                Grid.SetRow(payerText, 0);
+                var payer = calc.Participants.Single(p => p.User.Id == expense.Payer.Id);
+                var payerText = new TextBlock { Text = payer.User.FullName() };
+                Grid.SetRow(payerText, i);
                 Grid.SetColumn(payerText, 0);
-                grid.Children.Add(payerText);
+                ExpensesGrid.Children.Add(payerText);
 
-                var amount = new TextBlock { Text = Utils.AmountAsString(calc, expense.Amount), HorizontalAlignment = HorizontalAlignment.Center };
-                Grid.SetRow(amount, 0);
+                var amount = new TextBlock
+                    {
+                        Text = Utils.AmountAsString(calc, expense.Amount), 
+                        HorizontalAlignment = HorizontalAlignment.Center
+                    };
+                Grid.SetRow(amount, i);
                 Grid.SetColumn(amount, 1);
-                grid.Children.Add(amount);
+                ExpensesGrid.Children.Add(amount);
 
                 var participants = new TextBlock 
                 { 
@@ -231,18 +259,17 @@ namespace Sujut
                     HorizontalAlignment = HorizontalAlignment.Center 
                 };
 
-                Grid.SetRow(participants, 0);
+                Grid.SetRow(participants, i);
                 Grid.SetColumn(participants, 2);
-                grid.Children.Add(participants);
+                ExpensesGrid.Children.Add(participants);
 
-                var description = new TextBlock { Text = expense.Description };
-                Grid.SetRow(description, 1);
+                var description = new TextBlock { Text = expense.Description, TextWrapping = new TextWrapping()};
+                Grid.SetRow(description, i+1);
                 Grid.SetColumn(description, 0);
-                grid.Children.Add(description);
-
-                ExpensesList.Children.Add(grid);
-
-                i++;
+                Grid.SetColumnSpan(description, 3);
+                ExpensesGrid.Children.Add(description);
+                
+                i += 2;
             }
         }
 
@@ -269,8 +296,8 @@ namespace Sujut
                 Grid.SetColumn(debtorHeader, 0);
                 grid.Children.Add(debtorHeader);
 
-                var debtor = calc.Participants.Single(p => p.Id == debt.Debtor.Id);
-                var debtorText = new TextBlock { Text = debtor.User.Firstname, HorizontalAlignment = HorizontalAlignment.Right };
+                var debtor = calc.Participants.Single(p => p.User.Id == debt.Debtor.Id);
+                var debtorText = new TextBlock { Text = debtor.User.FullName(), HorizontalAlignment = HorizontalAlignment.Right };
                 Grid.SetRow(debtorText, 0);
                 Grid.SetColumn(debtorText, 1);
                 grid.Children.Add(debtorText);
@@ -280,8 +307,8 @@ namespace Sujut
                 Grid.SetColumn(creditorHeader, 0);
                 grid.Children.Add(creditorHeader);
 
-                var creditor = calc.Participants.Single(p => p.Id == debt.Debtor.Id);
-                var creditorText = new TextBlock { Text = creditor.User.Firstname, HorizontalAlignment = HorizontalAlignment.Right };
+                var creditor = calc.Participants.Single(p => p.User.Id == debt.Creditor.Id);
+                var creditorText = new TextBlock { Text = creditor.User.FullName(), HorizontalAlignment = HorizontalAlignment.Right };
                 Grid.SetRow(creditorText, 1);
                 Grid.SetColumn(creditorText, 1);
                 grid.Children.Add(creditorText);
@@ -301,7 +328,7 @@ namespace Sujut
                 Grid.SetColumn(hasPaidHeader, 0);
                 grid.Children.Add(hasPaidHeader);
 
-                var hasPaid = new TextBlock { Text = debtor.HasPaid ? "X" : " ", HorizontalAlignment = HorizontalAlignment.Right };
+                var hasPaid = new TextBlock { Text = debtor.HasPaid ? "✓" : " ", HorizontalAlignment = HorizontalAlignment.Right };
                 Grid.SetRow(hasPaid, 3);
                 Grid.SetColumn(hasPaid, 1);
                 grid.Children.Add(hasPaid);
@@ -315,18 +342,16 @@ namespace Sujut
         private void AddedExpenses_Click(object sender, EventArgs eventArgs)
         {
             var webClient = ApiHelper.AuthClient();
-            webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
             webClient.UploadStringCompleted += ReloadPage;
             webClient.UploadStringAsync(
-                ApiHelper.GetFullApiCallUri("api/debtcalculation/doneaddingexpenses?debtCalculationId=" + id), "POST", "");
+                ApiHelper.GetFullApiCallUri("api/DebtCalculation("+ id + ")/DoneAddingExpenses"), "");
         }
 
         private void HasPaid_Click(object sender, EventArgs eventArgs)
         {
             var webClient = ApiHelper.AuthClient();
-            webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
             webClient.UploadStringCompleted += ReloadPage;
-            webClient.UploadStringAsync(ApiHelper.GetFullApiCallUri("api/debtcalculation/paid?debtCalculationId=" + id), "POST", "");
+            webClient.UploadStringAsync(ApiHelper.GetFullApiCallUri("api/DebtCalculation(" + id + ")/Paid"), "");
         }
 
         private void ReloadPage(object target, UploadStringCompletedEventArgs args)

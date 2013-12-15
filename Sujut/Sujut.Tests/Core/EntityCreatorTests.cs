@@ -31,7 +31,7 @@ namespace Sujut.Tests.Core
             const string name = "Some calc";
             const string desc = "Real great calc";
             const string currency = "EUR";
-            const OldDebtCalculationPhase phase = OldDebtCalculationPhase.CollectingExpenses;
+            const DebtCalculationPhase phase = DebtCalculationPhase.CollectingExpenses;
             const string time = "2013-05-27T14:06:35";
             const long creatorId = 43;
 
