@@ -70,11 +70,29 @@ namespace Sujut.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add expense.
+        /// </summary>
+        public static string AddExpense {
+            get {
+                return ResourceManager.GetString("AddExpense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Amount.
         /// </summary>
         public static string Amount {
             get {
                 return ResourceManager.GetString("Amount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amount must be a numeric value.
+        /// </summary>
+        public static string AmountMustBeNumeric {
+            get {
+                return ResourceManager.GetString("AmountMustBeNumeric", resourceCulture);
             }
         }
         

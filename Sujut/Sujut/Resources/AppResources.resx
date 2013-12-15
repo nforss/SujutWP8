@@ -209,4 +209,10 @@
   <data name="New" xml:space="preserve">
     <value>New</value>
   </data>
+  <data name="AddExpense" xml:space="preserve">
+    <value>Add expense</value>
+  </data>
+  <data name="AmountMustBeNumeric" xml:space="preserve">
+    <value>Amount must be a numeric value</value>
+  </data>
 </root>

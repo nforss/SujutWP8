@@ -113,6 +113,15 @@ namespace Sujut
 
             if (calc.Phase == DebtCalculationPhase.CollectingExpenses.ToString())
             {
+                var addExpenseButton = new ApplicationBarIconButton
+                    {
+                        Text = AppResources.AddExpense,
+                        IconUri = new Uri("/Assets/Icons/add.png", UriKind.Relative)
+                    };
+
+                addExpenseButton.Click += AddExpense_Click;
+                ApplicationBar.Buttons.Add(addExpenseButton);
+
                 MainPivot.Items.Add(ExpensesItem);
 
                 ShowExpenses(calc);
@@ -337,6 +346,12 @@ namespace Sujut
 
                 i++;
             }
+        }
+
+        private void AddExpense_Click(object sender, EventArgs eventArgs)
+        {
+            NavigationService.Navigate(new Uri("/AddExpense.xaml?debtCalculationId=" + id +
+                "&" + DateTime.Now.Ticks, UriKind.Relative));
         }
 
         private void AddedExpenses_Click(object sender, EventArgs eventArgs)
