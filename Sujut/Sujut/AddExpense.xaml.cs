@@ -126,11 +126,11 @@ namespace Sujut
 
             var webClient = ApiHelper.AuthClient();
             webClient.UploadStringCompleted += ServerResponse;
-
+            
             var json = JsonConvert.SerializeObject(new
                 {
                     Amount = amount, Description = description, PayerId = payer.Id, DebtorIds = participants.Select(p => p.Id)
-                });
+                }, new JsonStringConverter());
 
             webClient.UploadStringAsync(ApiHelper.GetFullApiCallUri("api/DebtCalculations(" + id + ")/Expenses"), json);
         }
@@ -146,10 +146,7 @@ namespace Sujut
             }
             else
             {
-                dynamic result = JsonConvert.DeserializeObject(eventArgs.Result);
-                var calculationId = long.Parse(result.value.Value);
-
-                NavigationService.Navigate(new Uri("/ShowDebtCalculation.xaml?debtCalculationId=" + calculationId, UriKind.Relative));
+                NavigationService.Navigate(new Uri("/ShowDebtCalculation.xaml?debtCalculationId=" + id, UriKind.Relative));
             }
         }
     }

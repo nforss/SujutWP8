@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Sujut.Api;
 using Sujut.Core;
+using Sujut.Helpers;
 using Sujut.Resources;
 using Sujut.SujutApi;
 
@@ -51,7 +52,8 @@ namespace Sujut
 
             webClient.UploadStringCompleted += LoginValidated;
             webClient.UploadStringAsync(ApiHelper.GetFullApiCallUri("api/Users/Validate"),
-                                        JsonConvert.SerializeObject(new {Email = email, Password = password}));
+                                        JsonConvert.SerializeObject(new { Email = email, Password = password }, 
+                                        new JsonStringConverter()));
         }
 
         private void LoginValidated(object target, UploadStringCompletedEventArgs eventArgs)

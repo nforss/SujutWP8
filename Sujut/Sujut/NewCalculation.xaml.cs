@@ -49,7 +49,7 @@ namespace Sujut
             var webClient = ApiHelper.AuthClient();
             webClient.UploadStringCompleted += ServerResponse;
 
-            var json = JsonConvert.SerializeObject(new {Name = name, Description = description, Currency = currency});
+            var json = JsonConvert.SerializeObject(new { Name = name, Description = description, Currency = currency }, new JsonStringConverter());
             webClient.UploadStringAsync(ApiHelper.GetFullApiCallUri("api/DebtCalculations"), json);
         }
 

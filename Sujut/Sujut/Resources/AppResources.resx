@@ -215,4 +215,7 @@
   <data name="AmountMustBeNumeric" xml:space="preserve">
     <value>Amount must be a numeric value</value>
   </data>
+  <data name="NewCalculation" xml:space="preserve">
+    <value>New calculation</value>
+  </data>
 </root>

@@ -26,7 +26,7 @@
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Background="#BBDDAA">
             <TextBlock x:Name="SujutHeader" Text="{Binding Path=LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}" 
                        Style="{StaticResource PhoneTextNormalStyle}" Margin="12,0" Foreground="{StaticResource BlackAccentBrush}"/>
-            <TextBlock Text="{Binding Path=LocalizedResources.Login, Source={StaticResource LocalizedStrings}}" Margin="9,-7,0,0" 
+            <TextBlock Text="{Binding Path=LocalizedResources.AddExpense, Source={StaticResource LocalizedStrings}}" Margin="9,-7,0,0" 
                        Style="{StaticResource PhoneTextTitle1Style}" Foreground="{StaticResource BlackAccentBrush}" FontSize="48"/>
         </StackPanel>
 
